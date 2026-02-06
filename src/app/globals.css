@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 全局基础样式，可以按需调整 */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  @apply bg-black text-white;
+}
+
+a {
+  @apply text-inherit no-underline;
+}
+
+/* 博客正文代码块样式（配合 rehype-pretty-code + Shiki） */
+
+.prose pre {
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  background-color: #020617; /* slate-950 */
+  border: 1px solid rgba(148, 163, 184, 0.35); /* slate-400 */
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
+}
+
+.prose code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  font-size: 0.9em;
+}
+
+.prose pre code {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
