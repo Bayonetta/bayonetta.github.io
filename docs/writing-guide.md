@@ -181,7 +181,20 @@ git push
 每篇文章默认开评论。前端用的是 Giscus（基于 GitHub Discussions），需要在 `src/lib/site.ts` 里填入你的仓库参数后才会真正显示，否则显示"pending config"占位。
 
 **Q: 首页的导航圈、个人简介在哪改？**  
-都在 `src/lib/site.ts` 里，一处改全局生效。
+导航圈和简介在 `src/lib/site.ts`；首页「个人履历」区（教育/学术/作品/兴趣）在 `src/lib/resume.ts`。
+
+### 补充：首页个人履历
+
+首页英雄区往下滚就是履历区，四个模块的数据都在 **`src/lib/resume.ts`** 里配：
+
+| 模块 | 变量 | 格式 |
+|------|------|------|
+| 教育经历 | `education` | `{ period, school, degree, summary? }`，例：`{ period: "2015.09 — 2019.06", school: "某大学", degree: "计算机 · 学士" }` |
+| 学术发表 | `publications` | `{ year, title, venue, authors?, link? }` |
+| 作品 | `works` + `series` | 独立项目加进 `works`；Lyu / Pea 系列已固定在 `series`（改链接即可） |
+| 兴趣爱好 | `interests` | 字符串数组，如 `["摄影", "滑雪"]` |
+
+某模块留空时，首页对应区域显示「待补充」占位，不影响其他模块。
 
 **Q: 图集横滑的 `<ImageGallery>` 还能传什么？**  
 目前支持 `title`（组图标题）和 `images`（每项 `src` + `note`）。够用了。

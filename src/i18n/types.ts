@@ -13,6 +13,7 @@ export type Dict = {
   about: Record<string, string>;
   footer: Record<string, string>;
   pea: Record<string, string>;
+  resume: Record<string, string>;
 };
 
 export type Locale = "zh" | "en" | "ja";

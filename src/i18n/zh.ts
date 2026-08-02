@@ -13,7 +13,7 @@ export const zh: Dict = {
     whoami: "whoami",
     whoamiOut: "bayonetta · software engineer",
     tagline: "iOS / macOS · 前端 · 工具链",
-    scrollHint: "进入博客",
+    scrollHint: "个人履历",
   },
   blog: {
     title: "Blog",
@@ -47,5 +47,15 @@ export const zh: Dict = {
   pea: {
     title: "Pea 系列",
     subtitle: "系列产品索引",
+  },
+  resume: {
+    title: "~/resume",
+    education: "教育经历",
+    publications: "学术发表",
+    works: "作品",
+    series: "系列",
+    interests: "兴趣爱好",
+    empty: "待补充",
+    editHint: "$ edit src/lib/resume.ts",
   },
 };

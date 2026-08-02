@@ -13,7 +13,7 @@ export const en: Dict = {
     whoami: "whoami",
     whoamiOut: "bayonetta · software engineer",
     tagline: "iOS / macOS · Frontend · Tooling",
-    scrollHint: "Enter Blog",
+    scrollHint: "Resume",
   },
   blog: {
     title: "Blog",
@@ -47,5 +47,15 @@ export const en: Dict = {
   pea: {
     title: "Pea Series",
     subtitle: "Product index",
+  },
+  resume: {
+    title: "~/resume",
+    education: "Education",
+    publications: "Publications",
+    works: "Works",
+    series: "Series",
+    interests: "Interests",
+    empty: "pending",
+    editHint: "$ edit src/lib/resume.ts",
   },
 };
