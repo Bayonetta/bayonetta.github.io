@@ -1,72 +1,104 @@
-import { FileText, FolderKanban, Github, Image as ImageIcon, Info } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
+"use client";
+
+import Link from "next/link";
+import { FileText, FolderKanban, Github, Images, Sprout } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { LangToggle } from "@/components/LangToggle";
+import { useLocale } from "@/lib/locale";
+import { homeLinks } from "@/lib/site";
+import type { HomeLinkId } from "@/lib/site";
+
+const icons: Record<HomeLinkId, typeof Github> = {
+  github: Github,
+  blog: FileText,
+  gallery: Images,
+  lyu: FolderKanban,
+  pea: Sprout,
+};
 
 export default function Home() {
+  const { t } = useLocale();
+
   return (
-    <main className="relative h-screen w-full overflow-hidden bg-black text-white">
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
-        <Image
-           src="/images/abstract-1.jpg"
-           alt="Background"
-           fill
-           className="object-cover opacity-60"
-           priority
-        />
+    <main className="relative flex min-h-screen flex-col overflow-hidden">
+      {/* 背景：网格 + 径向 accent 光晕 */}
+      <div className="bg-grid pointer-events-none absolute inset-0" aria-hidden="true" />
+      <div
+        className="pointer-events-none absolute inset-0"
+        aria-hidden="true"
+        style={{
+          background:
+            "radial-gradient(ellipse 55% 45% at 50% 36%, color-mix(in oklab, var(--accent) 10%, transparent), transparent 72%)",
+        }}
+      />
+
+      {/* 顶部控制 */}
+      <div className="relative z-10 flex items-center justify-end gap-3 p-5">
+        <LangToggle />
+        <ThemeToggle />
       </div>
 
-      <div className="relative z-10 flex h-full flex-col items-center justify-center space-y-8 text-center">
-        {/* Avatar */}
-        <div className="relative h-32 w-32 overflow-hidden rounded-full border-4 border-white/20 shadow-2xl">
-          <img
-            src="https://avatars.githubusercontent.com/u/3266065?s=400&u=e1a094c5bde69f256d63cb5220fd3badd0979aaf&v=4"
-            alt="Avatar"
-            className="h-full w-full object-cover"
-          />
+      {/* 主体 */}
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 pb-16">
+        {/* 终端欢迎 */}
+        <div className="flex flex-col items-center text-center">
+          <p className="font-mono text-sm text-faint">
+            <span className="text-accent">~/bayonetta</span>
+            <span className="text-muted"> $ </span>
+          </p>
+          <h1 className="mt-2 font-mono text-5xl font-semibold tracking-tight md:text-7xl">
+            bayonetta
+          </h1>
+          <p className="mt-4 font-mono text-sm text-muted md:text-base">
+            <span className="text-faint">$</span> whoami{" "}
+            <span className="text-faint">→</span>{" "}
+            <span className="text-accent">{t.hero.whoamiOut}</span>
+          </p>
+          <p className="mt-3 text-sm text-muted">{t.hero.tagline}</p>
         </div>
 
-        {/* Name */}
-        <h1 className="font-serif text-4xl font-bold tracking-wider text-white md:text-5xl">
-          Bayonetta
-        </h1>
+        {/* 导航圈 */}
+        <nav
+          aria-label="主导航"
+          className="mt-14 flex max-w-3xl flex-wrap items-center justify-center gap-x-10 gap-y-8"
+        >
+          {homeLinks.map((link) => {
+            const Icon = icons[link.id];
+            return (
+              <Link
+                key={link.id}
+                href={link.href}
+                target={link.external ? "_blank" : undefined}
+                rel={link.external ? "noopener noreferrer" : undefined}
+                data-od-id={`home-circle-${link.id}`}
+                className="group flex flex-col items-center gap-3"
+              >
+                <span className="flex h-20 w-20 items-center justify-center rounded-full border border-line bg-surface shadow-sm transition-all duration-200 group-hover:-translate-y-1 group-hover:border-accent group-hover:bg-accent-soft group-hover:shadow-card">
+                  <Icon className="h-7 w-7 text-muted transition-colors group-hover:text-accent" />
+                </span>
+                <span className="font-mono text-xs uppercase tracking-wider text-muted transition-colors group-hover:text-fg">
+                  {link.label}
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
 
-        {/* Quote */}
-        <div className="font-serif text-lg text-gray-200 md:text-xl">
-          <p>非淡泊无以明志，非宁静无以致远。</p>
-          <p className="mt-2 text-right text-sm">—— 诸葛孔明</p>
-        </div>
-
-        {/* Buttons */}
-        <div className="flex flex-wrap justify-center gap-8">
-          <NavButton href="https://github.com/Bayonetta" icon={Github} label="Github" />
-          <NavButton href="/blog" icon={FileText} label="Blog" />
-          <NavButton href="https://lyu-series.github.io/" icon={FolderKanban} label="Lyu 系列" />
-          <NavButton href="/gallery" icon={ImageIcon} label="Gallery" />
-          <NavButton href="/about" icon={Info} label="About" />
-        </div>
-
-        <footer className="absolute bottom-4 text-xs text-gray-400">
-          © {new Date().getFullYear()} zs.dev. All rights reserved.
-        </footer>
+        {/* 进入博客提示 */}
+        <Link
+          href="/blog"
+          className="mt-16 inline-flex items-center gap-2 font-mono text-sm text-faint transition-colors hover:text-accent"
+        >
+          {t.hero.scrollHint}
+          <span aria-hidden="true">↓</span>
+        </Link>
       </div>
+
+      {/* 页脚 */}
+      <footer className="relative z-10 flex items-center justify-between px-6 py-4 text-xs text-faint">
+        <span>© {new Date().getFullYear()} bayonetta</span>
+        <span className="font-mono hidden sm:block">zsh · ∞</span>
+      </footer>
     </main>
   );
-}
-
-function NavButton({ href, icon: Icon, label }: { href: string; icon: any; label: string }) {
-  return (
-    <Link 
-      href={href}
-      target={href.startsWith('http') ? '_blank' : undefined}
-      className="group flex flex-col items-center gap-2 transition-transform hover:scale-110"
-    >
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm transition-colors group-hover:bg-white/20">
-        <Icon className="h-8 w-8 text-white" />
-      </div>
-      <span className="font-serif text-sm tracking-wide text-white opacity-80 group-hover:opacity-100">
-        {label}
-      </span>
-    </Link>
-  )
 }
