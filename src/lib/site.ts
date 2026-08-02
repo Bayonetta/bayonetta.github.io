@@ -38,13 +38,12 @@ export const site = {
 // Pea 系列产品索引（/pea 页面展示）。例：{ name: "PeaScribe", desc: "字幕生成器", href: "/" }
 export const peaProducts: { name: string; desc: string; href: string }[] = [];
 
-// 首页导航圈。href 以 http 开头的走外部链接。
+// 首页底部导航圈。href 以 http 开头的走外部链接。
+// Lyu / Pea 系列已在首页「作品集」展示，不重复出现在导航圈里。
 export const homeLinks = [
   { id: "github", label: "GitHub", href: site.github, external: true },
   { id: "blog", label: "Blog", href: "/blog", external: false },
   { id: "gallery", label: "Gallery", href: "/gallery", external: false },
-  { id: "lyu", label: "Lyu 系列", href: "https://lyu-series.github.io/", external: true },
-  { id: "pea", label: "Pea 系列", href: "/pea", external: false },
 ] as const;
 
 export type HomeLinkId = (typeof homeLinks)[number]["id"];

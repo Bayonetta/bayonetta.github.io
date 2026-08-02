@@ -15,7 +15,7 @@ import type { Locale } from "@/i18n/types";
 
 function SectionTitle({ label }: { label: string }) {
   return (
-    <h3 className="mb-4 font-mono text-sm font-semibold uppercase tracking-wider text-faint">
+    <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-wider text-faint">
       {label}
     </h3>
   );
@@ -24,9 +24,9 @@ function SectionTitle({ label }: { label: string }) {
 function Empty({ text }: { text: string }) {
   const { t } = useLocale();
   return (
-    <div className="card flex items-center justify-center px-6 py-8">
+    <div className="rounded-md border border-dashed border-line px-4 py-8 text-center">
       <p className="font-mono text-xs text-faint">
-        {text}: {t.resume.empty} · {t.resume.editHint}
+        {text}: {t.resume.empty}
       </p>
     </div>
   );
@@ -36,7 +36,7 @@ function EducationList({ items }: { items: EducationItem[] }) {
   const { locale } = useLocale();
   if (items.length === 0) return <Empty text="~/education" />;
   return (
-    <ol className="space-y-6 border-l border-line pl-6">
+    <ol className="space-y-4 border-l border-line pl-4">
       {items.map((item, i) => (
         <li key={i} className="relative">
           <span className="absolute -left-[0.57rem] top-1.5 h-2.5 w-2.5 rounded-full border border-accent bg-bg" />
@@ -45,7 +45,7 @@ function EducationList({ items }: { items: EducationItem[] }) {
             {item.school} · {item.degree}
           </p>
           {item.summary?.[locale as Locale] && (
-            <p className="mt-1 text-sm text-muted">
+            <p className="mt-1 text-xs text-muted">
               {item.summary[locale as Locale]}
             </p>
           )}
@@ -58,10 +58,10 @@ function EducationList({ items }: { items: EducationItem[] }) {
 function PublicationList({ items }: { items: PublicationItem[] }) {
   if (items.length === 0) return <Empty text="~/publications" />;
   return (
-    <ul className="space-y-4">
+    <ul className="space-y-3">
       {items.map((item, i) => (
-        <li key={i} className="flex items-baseline gap-4">
-          <span className="w-12 shrink-0 font-mono text-xs text-faint">
+        <li key={i} className="flex items-baseline gap-3">
+          <span className="w-10 shrink-0 font-mono text-xs text-faint">
             {item.year}
           </span>
           <div className="min-w-0">
@@ -70,12 +70,12 @@ function PublicationList({ items }: { items: PublicationItem[] }) {
                 href={item.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm font-medium transition-colors hover:text-accent"
+                className="text-sm font-medium leading-snug transition-colors hover:text-accent"
               >
                 {item.title}
               </a>
             ) : (
-              <p className="text-sm font-medium">{item.title}</p>
+              <p className="text-sm font-medium leading-snug">{item.title}</p>
             )}
             <p className="mt-0.5 text-xs text-muted">
               {item.venue}
@@ -85,43 +85,6 @@ function PublicationList({ items }: { items: PublicationItem[] }) {
         </li>
       ))}
     </ul>
-  );
-}
-
-function WorksGrid() {
-  const all = [...series, ...works];
-  return (
-    <div className="grid gap-4 sm:grid-cols-2">
-      {all.map((item) =>
-        item.external ? (
-          <a
-            key={item.name}
-            href={item.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="card group flex items-center justify-between p-5 transition-colors hover:border-accent"
-          >
-            <div>
-              <h4 className="font-mono text-sm font-semibold">{item.name}</h4>
-              <p className="mt-1 text-sm text-muted">{item.desc}</p>
-            </div>
-            <ArrowUpRight className="h-5 w-5 shrink-0 text-faint transition-colors group-hover:text-accent" />
-          </a>
-        ) : (
-          <Link
-            key={item.name}
-            href={item.href}
-            className="card group flex items-center justify-between p-5 transition-colors hover:border-accent"
-          >
-            <div>
-              <h4 className="font-mono text-sm font-semibold">{item.name}</h4>
-              <p className="mt-1 text-sm text-muted">{item.desc}</p>
-            </div>
-            <ArrowUpRight className="h-5 w-5 shrink-0 text-faint transition-colors group-hover:text-accent" />
-          </Link>
-        ),
-      )}
-    </div>
   );
 }
 
@@ -138,44 +101,73 @@ function InterestList({ items }: { items: string[] }) {
   );
 }
 
+function WorksGrid() {
+  const all = [...series, ...works];
+  return (
+    <div className="grid gap-4 sm:grid-cols-2">
+      {all.map((item) => {
+        const inner = (
+          <>
+            <div>
+              <h4 className="font-mono text-sm font-semibold">{item.name}</h4>
+              <p className="mt-1 text-sm text-muted">{item.desc}</p>
+            </div>
+            <ArrowUpRight className="h-5 w-5 shrink-0 text-faint transition-colors group-hover:text-accent" />
+          </>
+        );
+        return item.external ? (
+          <a
+            key={item.name}
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="card group flex items-center justify-between p-5 transition-colors hover:border-accent"
+          >
+            {inner}
+          </a>
+        ) : (
+          <Link
+            key={item.name}
+            href={item.href}
+            className="card group flex items-center justify-between p-5 transition-colors hover:border-accent"
+          >
+            {inner}
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
 export function HomeResume() {
   const { t } = useLocale();
 
   return (
-    <section
-      data-od-id="home-resume"
-      id="resume"
-      className="relative border-t border-line"
-    >
-      <div className="mx-auto w-full max-w-3xl px-4 py-16 sm:px-6 sm:py-20">
-        <h2 className="font-mono text-2xl font-semibold tracking-tight">
-          {t.resume.title}
-        </h2>
-
-        {/* 教育经历 */}
-        <div className="mt-10">
+    <>
+      {/* 中部三列：教育 | 发表 | 兴趣（大屏横向并列，移动端竖向） */}
+      <div
+        data-od-id="home-resume"
+        className="grid gap-4 md:grid-cols-3"
+      >
+        <section className="card p-5">
           <SectionTitle label={t.resume.education} />
           <EducationList items={education} />
-        </div>
-
-        {/* 学术发表 */}
-        <div className="mt-10">
+        </section>
+        <section className="card p-5">
           <SectionTitle label={t.resume.publications} />
           <PublicationList items={publications} />
-        </div>
-
-        {/* 作品 */}
-        <div className="mt-10">
-          <SectionTitle label={t.resume.works} />
-          <WorksGrid />
-        </div>
-
-        {/* 兴趣爱好 */}
-        <div className="mt-10">
+        </section>
+        <section className="card p-5">
           <SectionTitle label={t.resume.interests} />
           <InterestList items={interests} />
-        </div>
+        </section>
       </div>
-    </section>
+
+      {/* 作品集 */}
+      <section data-od-id="home-works" className="mt-8">
+        <SectionTitle label={t.resume.works} />
+        <WorksGrid />
+      </section>
+    </>
   );
 }
