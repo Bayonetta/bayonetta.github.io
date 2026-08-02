@@ -22,6 +22,8 @@ npm run build     # 静态导出到 out/
 
 ## 写文章
 
+> 📖 完整上手教程见 **[`docs/writing-guide.md`](docs/writing-guide.md)** — 怎么写博客、横滑图集、gallery 用法、多语言。
+
 1. 在 `content/posts/` 新建 `YYYY-MM-DD-标题.md`。
 2. frontmatter 支持 `title` / `date` / `description` / `tags` / `category` / `updated` / `comments`。
 3. **多语言**：同一篇文章可用 `slug.zh.md` / `slug.en.md` / `slug.ja.md`，正文页自动出语言切换器。

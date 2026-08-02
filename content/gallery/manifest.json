@@ -1,1 +1,13 @@
-[]
+[
+  { "src": "/images/abstract-1.jpg", "title": "abstract-01", "note": "示例图集 · 在 content/gallery/manifest.json 中替换为你自己的照片" },
+  { "src": "/images/abstract-2.jpg", "title": "abstract-02", "note": "示例图集 · 在 content/gallery/manifest.json 中替换为你自己的照片" },
+  { "src": "/images/abstract-3.jpg", "title": "abstract-03", "note": "示例图集 · 在 content/gallery/manifest.json 中替换为你自己的照片" },
+  { "src": "/images/abstract-4.jpg", "title": "abstract-04", "note": "示例图集 · 在 content/gallery/manifest.json 中替换为你自己的照片" },
+  { "src": "/images/abstract-5.jpg", "title": "abstract-05", "note": "示例图集 · 在 content/gallery/manifest.json 中替换为你自己的照片" },
+  { "src": "/images/abstract-6.jpg", "title": "abstract-06", "note": "示例图集 · 在 content/gallery/manifest.json 中替换为你自己的照片" },
+  { "src": "/images/abstract-7.jpg", "title": "abstract-07", "note": "示例图集 · 在 content/gallery/manifest.json 中替换为你自己的照片" },
+  { "src": "/images/abstract-8.jpg", "title": "abstract-08", "note": "示例图集 · 在 content/gallery/manifest.json 中替换为你自己的照片" },
+  { "src": "/images/abstract-10.jpg", "title": "abstract-10", "note": "示例图集 · 在 content/gallery/manifest.json 中替换为你自己的照片" },
+  { "src": "/images/abstract-11.jpg", "title": "abstract-11", "note": "示例图集 · 在 content/gallery/manifest.json 中替换为你自己的照片" },
+  { "src": "/images/abstract-12.jpg", "title": "abstract-12", "note": "示例图集 · 在 content/gallery/manifest.json 中替换为你自己的照片" }
+]
