@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { readFileSync } from "fs";
+import { join } from "path";
 import Script from "next/script";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { LocaleProvider } from "@/lib/locale";
@@ -23,31 +25,18 @@ const jetbrainsMono = JetBrains_Mono({
 //   Next.js 内部 new URL(path, location.href) 会抛 "Invalid URL"；
 // - 浏览器禁止在 srcdoc 文档里 replaceState/pushState 修改 URL。
 // 这里仅在 srcdoc 场景打补丁，正常部署的 HTTP 页面完全不受影响。
-const SrcDocCompatScript = `(function () {
-  if (window.location.href !== "about:srcdoc") return;
-  var base = "http://localhost/";
-  try {
-    var po = window.parent.location.origin;
-    if (/^https?:/i.test(po)) base = po + "/";
-  } catch (e) {}
-  var NativeURL = window.URL;
-  function SafeURL(u, b) {
-    try {
-      if (b === "about:srcdoc" && typeof u === "string" && !/^[a-z][a-z0-9+.\\-]*:/i.test(u)) {
-        return new NativeURL(u, base);
-      }
-      return b === undefined ? new NativeURL(u) : new NativeURL(u, b);
-    } catch (e) {
-      return new NativeURL(String(u), base);
-    }
-  }
-  SafeURL.prototype = NativeURL.prototype;
-  if (NativeURL.createObjectURL) SafeURL.createObjectURL = NativeURL.createObjectURL;
-  if (NativeURL.revokeObjectURL) SafeURL.revokeObjectURL = NativeURL.revokeObjectURL;
-  window.URL = SafeURL;
-  window.history.replaceState = function () { return undefined; };
-  window.history.pushState = function () { return undefined; };
-})();`;
+//
+// 兼容脚本本体在 scripts/srcdoc-compat.js（单一来源，避免两份拷贝漂移）。
+// 它必须早于任何 Next 框架脚本执行，因此构建后由
+// scripts/inject-srcdoc-compat.js 把它从 <body> 移到每个 HTML 的 <head> 顶部。
+// 注意：不要改用 next/script strategy="beforeInteractive" —— 静态导出下它只会
+// 被序列进 RSC 的 __next_s，由客户端 bootstrap 在 hydration 前注入；当预览面板
+// 把 chunk 内联进 srcdoc 时，bootstrap 先于 body 的 __next_s.push 执行，补丁永远
+// 不会注入。只有物理地写进 <head> 的同步行内脚本才可靠。
+const SrcDocCompatScript = readFileSync(
+  join(process.cwd(), "scripts", "srcdoc-compat.js"),
+  "utf8"
+);
 
 export const metadata: Metadata = {
   title: {
@@ -81,7 +70,8 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans bg-bg text-fg antialiased`}>
-        {/* 必须位于任何框架脚本之前执行：srcdoc 预览兼容补丁 */}
+        {/* 必须位于任何框架脚本之前执行：srcdoc 预览兼容补丁。
+            构建后由 scripts/inject-srcdoc-compat.js 移到 <head> 顶部。 */}
         <script dangerouslySetInnerHTML={{ __html: SrcDocCompatScript }} />
         <ThemeProvider>
           <LocaleProvider>{children}</LocaleProvider>
