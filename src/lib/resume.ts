@@ -4,8 +4,9 @@ import type { Locale } from "@/i18n/types";
 
 export type EducationItem = {
   period: string; // 例："2015.09 — 2019.06"
-  school: string; // 例："某某大学"
-  degree: string; // 例："计算机科学与技术 · 学士"
+  // 三语校名 / 学位（zh / en / ja，缺失时回退到 zh）
+  school: Partial<Record<Locale, string>>; // 例：{ zh: "某某大学", en: "Some University", ja: "〇〇大学" }
+  degree: Partial<Record<Locale, string>>; // 例：{ zh: "学士", en: "Bachelor", ja: "学士" }
   summary?: Partial<Record<Locale, string>>;
 };
 
@@ -28,22 +29,38 @@ export type WorkItem = {
 export const education: EducationItem[] = [
   {
     period: "2010.09 — 2014.06",
-    school: "华中科技大学 (HUST)",
-    degree: "Bachelor · 学士",
+    school: {
+      zh: "华中科技大学 (HUST)",
+      en: "Huazhong University of Science and Technology (HUST)",
+      ja: "華中科技大学 (HUST)",
+    },
+    degree: {
+      zh: "学士",
+      en: "Bachelor",
+      ja: "学士",
+    },
     summary: {
       zh: "全日制本科",
       en: "Full-time undergraduate",
-      ja: "全日制学士課程",
+      ja: "全日制学部課程",
     },
   },
   {
     period: "2024.04 — 2026.03",
-    school: "北陸先端科学技術大学院大学 (JAIST)",
-    degree: "Master · 修士",
+    school: {
+      zh: "北陆先端科学技术大学院大学 (JAIST)",
+      en: "Japan Advanced Institute of Science and Technology (JAIST)",
+      ja: "北陸先端科学技術大学院大学 (JAIST)",
+    },
+    degree: {
+      zh: "硕士",
+      en: "Master",
+      ja: "修士",
+    },
     summary: {
-      zh: "日本国立大学院 · 修士课程",
-      en: "National graduate university in Japan · Master's program",
-      ja: "日本の国立大学院 · 修士課程",
+      zh: "日本国立大学院",
+      en: "National graduate university in Japan",
+      ja: "日本の国立大学院",
     },
   },
 ];

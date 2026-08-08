@@ -32,26 +32,31 @@ function Empty({ text }: { text: string }) {
 function EducationList() {
   const { locale } = useLocale();
   if (education.length === 0) return <Empty text="~/education" />;
+  const l = locale as Locale;
   return (
     <ol className="mt-6 space-y-7">
-      {education.map((item, i) => (
-        <li
-          key={i}
-          className="grid gap-x-8 gap-y-1 sm:grid-cols-[160px_1fr] sm:items-baseline"
-        >
-          <p className="font-mono text-sm text-accent">{item.period}</p>
-          <div className="min-w-0">
-            <p className="text-sm font-medium leading-snug">
-              {item.school} · {item.degree}
-            </p>
-            {item.summary?.[locale as Locale] && (
-              <p className="mt-1 text-xs text-muted">
-                {item.summary[locale as Locale]}
-              </p>
-            )}
-          </div>
-        </li>
-      ))}
+      {education.map((item, i) => {
+        const school = item.school?.[l] ?? item.school?.zh;
+        const degree = item.degree?.[l] ?? item.degree?.zh;
+        return (
+          <li
+            key={i}
+            className="grid gap-x-8 gap-y-1 sm:grid-cols-[160px_1fr] sm:items-baseline"
+          >
+            <p className="font-mono text-sm text-accent">{item.period}</p>
+            <div className="min-w-0">
+              {school && degree && (
+                <p className="text-sm font-medium leading-snug">
+                  {school} · {degree}
+                </p>
+              )}
+              {item.summary?.[l] && (
+                <p className="mt-1 text-xs text-muted">{item.summary[l]}</p>
+              )}
+            </div>
+          </li>
+        );
+      })}
     </ol>
   );
 }
