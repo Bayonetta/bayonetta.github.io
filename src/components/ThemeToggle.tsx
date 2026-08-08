@@ -6,12 +6,10 @@ import { useEffect, useState } from "react";
 
 export function ThemeToggle() {
   const { setTheme } = useTheme();
-  // 直接以 documentElement 上实际应用的 class 为准（用户真实看到的主题），
-  // 避免 next-themes resolvedTheme 在首次挂载时的解析时序问题。
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (typeof document === "undefined") return true; // SSR 默认暗色
-    return document.documentElement.classList.contains("dark");
-  });
+  // 初始值固定为暗色，与 SSR 输出保持一致，避免 hydration 时读取 document 造成
+  // 首屏不匹配（当 localStorage 保存了亮色主题时会触发 React #418 / #423 错误）。
+  // 真实主题 class 在 useEffect 中同步，只影响挂载后的图标朝向。
+  const [isDark, setIsDark] = useState<boolean>(true);
 
   useEffect(() => {
     const root = document.documentElement;

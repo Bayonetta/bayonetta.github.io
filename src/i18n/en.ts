@@ -14,6 +14,8 @@ export const en: Dict = {
     whoamiOut: "bayonetta · software engineer",
     tagline: "iOS / macOS · Frontend · Tooling",
     scrollHint: "Resume",
+    lyuSite: "Lyu Series",
+    peaSite: "Pea Series",
   },
   blog: {
     title: "Blog",

@@ -26,25 +26,36 @@ export type WorkItem = {
 
 // —— 教育经历 ——
 export const education: EducationItem[] = [
-  // 例：
-  // {
-  //   period: "2015.09 — 2019.06",
-  //   school: "某某大学",
-  //   degree: "计算机科学与技术 · 学士",
-  //   summary: { zh: "…", en: "…", ja: "…" },
-  // },
+  {
+    period: "2010.09 — 2014.06",
+    school: "华中科技大学 (HUST)",
+    degree: "Bachelor · 学士",
+    summary: {
+      zh: "全日制本科",
+      en: "Full-time undergraduate",
+      ja: "全日制学士課程",
+    },
+  },
+  {
+    period: "2024.04 — 2026.03",
+    school: "北陸先端科学技術大学院大学 (JAIST)",
+    degree: "Master · 修士",
+    summary: {
+      zh: "日本国立大学院 · 修士课程",
+      en: "National graduate university in Japan · Master's program",
+      ja: "日本の国立大学院 · 修士課程",
+    },
+  },
 ];
 
 // —— 学术发表 ——
 export const publications: PublicationItem[] = [
-  // 例：
-  // {
-  //   year: "2024",
-  //   title: "A Novel Approach to …",
-  //   venue: "IEEE Conference on …",
-  //   authors: "S. Zhao, et al.",
-  //   link: "https://doi.org/…",
-  // },
+  {
+    year: "2026",
+    title: "Research on the Computational Complexity of Walls and Warriors Puzzle",
+    venue: "The 17th Annual Meeting of Asian Association for Algorithms and Computation (AAAC 2026) · May 23–24, 2026 · Qingdao, China · International Conference Paper (Screening / Abstract-reviewed)",
+    authors: "Shuai Zhao, Tonan Kamata, Ryuhei Uehara",
+  },
 ];
 
 // —— 独立作品（非系列项目） ——
@@ -53,23 +64,13 @@ export const works: WorkItem[] = [
   // { name: "某某工具", desc: "一句话简介", href: "/", external: false },
 ];
 
-// —— 系列作品（Lyu / Pea 固定展示，可增删） ——
-export const series: WorkItem[] = [
-  {
-    name: "Lyu 系列",
-    desc: "系列项目主页",
-    href: "https://lyu-series.github.io/",
-    external: true,
-  },
-  {
-    name: "Pea 系列",
-    desc: "系列产品索引",
-    href: "/pea",
-    external: false,
-  },
-];
+// —— 系列作品 ——
+// Lyu / Pea 入口已并入首页顶部的「系列官网」按钮，这里不再重复展示。
+// 后续如有新的系列产品，加回即可（会自动出现在首页「作品」栏）。
+export const series: WorkItem[] = [];
 
 // —— 兴趣爱好 ——
 export const interests: string[] = [
-  // 例：["摄影", "滑雪", "爵士乐"]
+  "Video Games",
+  "用 Claude Code 串联一切",
 ];

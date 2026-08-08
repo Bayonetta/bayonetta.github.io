@@ -7,6 +7,8 @@ export type Dict = {
     whoamiOut: string;
     tagline: string;
     scrollHint: string;
+    lyuSite: string;
+    peaSite: string;
   };
   blog: Record<string, string>;
   gallery: Record<string, string>;

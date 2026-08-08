@@ -18,6 +18,37 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+// 预览面板（如 Open Design）以 about:srcdoc 注入页面时：
+// - location.href 是 "about:srcdoc"，无法作为相对路径的 base，
+//   Next.js 内部 new URL(path, location.href) 会抛 "Invalid URL"；
+// - 浏览器禁止在 srcdoc 文档里 replaceState/pushState 修改 URL。
+// 这里仅在 srcdoc 场景打补丁，正常部署的 HTTP 页面完全不受影响。
+const SrcDocCompatScript = `(function () {
+  if (window.location.href !== "about:srcdoc") return;
+  var base = "http://localhost/";
+  try {
+    var po = window.parent.location.origin;
+    if (/^https?:/i.test(po)) base = po + "/";
+  } catch (e) {}
+  var NativeURL = window.URL;
+  function SafeURL(u, b) {
+    try {
+      if (b === "about:srcdoc" && typeof u === "string" && !/^[a-z][a-z0-9+.\\-]*:/i.test(u)) {
+        return new NativeURL(u, base);
+      }
+      return b === undefined ? new NativeURL(u) : new NativeURL(u, b);
+    } catch (e) {
+      return new NativeURL(String(u), base);
+    }
+  }
+  SafeURL.prototype = NativeURL.prototype;
+  if (NativeURL.createObjectURL) SafeURL.createObjectURL = NativeURL.createObjectURL;
+  if (NativeURL.revokeObjectURL) SafeURL.revokeObjectURL = NativeURL.revokeObjectURL;
+  window.URL = SafeURL;
+  window.history.replaceState = function () { return undefined; };
+  window.history.pushState = function () { return undefined; };
+})();`;
+
 export const metadata: Metadata = {
   title: {
     default: site.title,
@@ -50,6 +81,8 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans bg-bg text-fg antialiased`}>
+        {/* 必须位于任何框架脚本之前执行：srcdoc 预览兼容补丁 */}
+        <script dangerouslySetInnerHTML={{ __html: SrcDocCompatScript }} />
         <ThemeProvider>
           <LocaleProvider>{children}</LocaleProvider>
         </ThemeProvider>

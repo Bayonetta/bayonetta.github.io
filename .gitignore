@@ -42,3 +42,26 @@ next-env.d.ts
 
 # obsidian
 .obsidian/
+
+# Open Design 工作区文件
+/.file-versions/
+/.mcp.json
+/.playwright-mcp/
+/*.artifact.json
+/home-page.png
+
+# 预览导出副本（CI 从源码构建 out/，根目录这些为本地预览生成，无需提交）
+/_next/
+/index.html
+/about.html
+/blog.html
+/gallery.html
+/pea.html
+/404.html
+/favicon.ico
+/*.txt
+/next.svg
+/vercel.svg
+/window.svg
+/blog/
+/images/

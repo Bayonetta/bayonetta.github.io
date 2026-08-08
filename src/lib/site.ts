@@ -8,6 +8,9 @@ export const site = {
   description: "个人主页 — 技术博客 · 图集 · 项目",
   url: "https://bayonetta.github.io",
   github: "https://github.com/Bayonetta",
+  // 系列官网
+  lyuSeries: "https://lyu-series.github.io/",
+  peaSeries: "http://pea-series.github.io/",
   // 个人履历（博客页 ProfileCard / About 页展示）
   profile: {
     name: "Bayonetta",

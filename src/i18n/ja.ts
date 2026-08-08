@@ -14,6 +14,8 @@ export const ja: Dict = {
     whoamiOut: "bayonetta · software engineer",
     tagline: "iOS / macOS · フロントエンド · ツール",
     scrollHint: "プロフィール",
+    lyuSite: "Lyu シリーズ",
+    peaSite: "Pea シリーズ",
   },
   blog: {
     title: "Blog",

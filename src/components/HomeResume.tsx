@@ -10,12 +10,11 @@ import {
   series,
   works,
 } from "@/lib/resume";
-import type { EducationItem, PublicationItem } from "@/lib/resume";
 import type { Locale } from "@/i18n/types";
 
 function SectionTitle({ label }: { label: string }) {
   return (
-    <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-wider text-faint">
+    <h3 className="font-mono text-xs font-semibold uppercase tracking-widest text-faint">
       {label}
     </h3>
   );
@@ -24,46 +23,49 @@ function SectionTitle({ label }: { label: string }) {
 function Empty({ text }: { text: string }) {
   const { t } = useLocale();
   return (
-    <div className="rounded-md border border-dashed border-line px-4 py-8 text-center">
-      <p className="font-mono text-xs text-faint">
-        {text}: {t.resume.empty}
-      </p>
-    </div>
+    <p className="mt-5 font-mono text-xs text-faint">
+      {text}: {t.resume.empty}
+    </p>
   );
 }
 
-function EducationList({ items }: { items: EducationItem[] }) {
+function EducationList() {
   const { locale } = useLocale();
-  if (items.length === 0) return <Empty text="~/education" />;
+  if (education.length === 0) return <Empty text="~/education" />;
   return (
-    <ol className="space-y-4 border-l border-line pl-4">
-      {items.map((item, i) => (
-        <li key={i} className="relative">
-          <span className="absolute -left-[0.57rem] top-1.5 h-2.5 w-2.5 rounded-full border border-accent bg-bg" />
-          <p className="font-mono text-xs text-accent">{item.period}</p>
-          <p className="mt-1 text-sm font-medium">
-            {item.school} · {item.degree}
-          </p>
-          {item.summary?.[locale as Locale] && (
-            <p className="mt-1 text-xs text-muted">
-              {item.summary[locale as Locale]}
+    <ol className="mt-6 space-y-7">
+      {education.map((item, i) => (
+        <li
+          key={i}
+          className="grid gap-x-8 gap-y-1 sm:grid-cols-[160px_1fr] sm:items-baseline"
+        >
+          <p className="font-mono text-sm text-accent">{item.period}</p>
+          <div className="min-w-0">
+            <p className="text-sm font-medium leading-snug">
+              {item.school} · {item.degree}
             </p>
-          )}
+            {item.summary?.[locale as Locale] && (
+              <p className="mt-1 text-xs text-muted">
+                {item.summary[locale as Locale]}
+              </p>
+            )}
+          </div>
         </li>
       ))}
     </ol>
   );
 }
 
-function PublicationList({ items }: { items: PublicationItem[] }) {
-  if (items.length === 0) return <Empty text="~/publications" />;
+function PublicationList() {
+  if (publications.length === 0) return <Empty text="~/publications" />;
   return (
-    <ul className="space-y-3">
-      {items.map((item, i) => (
-        <li key={i} className="flex items-baseline gap-3">
-          <span className="w-10 shrink-0 font-mono text-xs text-faint">
-            {item.year}
-          </span>
+    <ul className="mt-6 space-y-6">
+      {publications.map((item, i) => (
+        <li
+          key={i}
+          className="grid gap-x-8 gap-y-1 sm:grid-cols-[160px_1fr] sm:items-baseline"
+        >
+          <p className="font-mono text-sm text-faint">{item.year}</p>
           <div className="min-w-0">
             {item.link ? (
               <a
@@ -77,7 +79,7 @@ function PublicationList({ items }: { items: PublicationItem[] }) {
             ) : (
               <p className="text-sm font-medium leading-snug">{item.title}</p>
             )}
-            <p className="mt-0.5 text-xs text-muted">
+            <p className="mt-1 text-xs leading-relaxed text-muted">
               {item.venue}
               {item.authors ? ` · ${item.authors}` : ""}
             </p>
@@ -88,11 +90,11 @@ function PublicationList({ items }: { items: PublicationItem[] }) {
   );
 }
 
-function InterestList({ items }: { items: string[] }) {
-  if (items.length === 0) return <Empty text="~/interests" />;
+function InterestList() {
+  if (interests.length === 0) return <Empty text="~/interests" />;
   return (
-    <div className="flex flex-wrap gap-2">
-      {items.map((it) => (
+    <div className="mt-6 flex flex-wrap gap-2">
+      {interests.map((it) => (
         <span key={it} className="chip cursor-default">
           {it}
         </span>
@@ -104,7 +106,7 @@ function InterestList({ items }: { items: string[] }) {
 function WorksGrid() {
   const all = [...series, ...works];
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className="mt-6 grid gap-4 sm:grid-cols-2">
       {all.map((item) => {
         const inner = (
           <>
@@ -143,31 +145,32 @@ export function HomeResume() {
   const { t } = useLocale();
 
   return (
-    <>
-      {/* 中部三列：教育 | 发表 | 兴趣（大屏横向并列，移动端竖向） */}
-      <div
-        data-od-id="home-resume"
-        className="grid gap-4 md:grid-cols-3"
-      >
-        <section className="card p-5">
-          <SectionTitle label={t.resume.education} />
-          <EducationList items={education} />
-        </section>
-        <section className="card p-5">
-          <SectionTitle label={t.resume.publications} />
-          <PublicationList items={publications} />
-        </section>
-        <section className="card p-5">
-          <SectionTitle label={t.resume.interests} />
-          <InterestList items={interests} />
-        </section>
-      </div>
-
-      {/* 作品集 */}
-      <section data-od-id="home-works" className="mt-8">
-        <SectionTitle label={t.resume.works} />
-        <WorksGrid />
+    <div data-od-id="home-resume" className="space-y-12">
+      {/* 教育经历：全行竖向 */}
+      <section className="border-t border-line pt-8">
+        <SectionTitle label={t.resume.education} />
+        <EducationList />
       </section>
-    </>
+
+      {/* 学术发表：全行竖向 */}
+      <section className="border-t border-line pt-8">
+        <SectionTitle label={t.resume.publications} />
+        <PublicationList />
+      </section>
+
+      {/* 兴趣爱好：全行竖向 */}
+      <section className="border-t border-line pt-8">
+        <SectionTitle label={t.resume.interests} />
+        <InterestList />
+      </section>
+
+      {/* 作品集（仅在确有作品时展示） */}
+      {works.length + series.length > 0 && (
+        <section data-od-id="home-works" className="border-t border-line pt-8">
+          <SectionTitle label={t.resume.works} />
+          <WorksGrid />
+        </section>
+      )}
+    </div>
   );
 }
