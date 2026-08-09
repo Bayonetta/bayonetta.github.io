@@ -88,6 +88,6 @@ export const series: WorkItem[] = [];
 
 // —— 兴趣爱好 ——
 export const interests: string[] = [
-  "Video Games",
-  "用 Claude Code 串联一切",
+  "类魂游戏",
+  "挑战困难的事情",
 ];
