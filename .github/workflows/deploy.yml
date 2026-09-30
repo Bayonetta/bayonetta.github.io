@@ -42,22 +42,34 @@ jobs:
 
       - name: Deploy to gh-pages branch
         run: |
-          # Create a temporary directory for the build
-          mkdir -p temp-deploy
-          cp -R out/* temp-deploy/
-          cd temp-deploy
+          # 创建一个全新的临时目录用于部署
+          mkdir -p /tmp/gh-pages-deploy
+          cd /tmp/gh-pages-deploy
           
-          # Initialize git if needed
+          # 初始化git仓库
           git init
           git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Bayonetta/bayonetta.github.io.git
-          git fetch origin gh-pages || true
+          
+          # 获取gh-pages分支（如果存在）或创建新分支
+          git fetch origin gh-pages || echo "gh-pages branch does not exist yet"
           git checkout gh-pages || git checkout --orphan gh-pages
           
-          # Remove existing files and copy new ones
+          # 清除现有文件（保留.git目录）
           git rm -rf . || true
-          cp -R ./* .
+          git clean -fxd || true
+          
+          # 复制构建好的文件
+          cp -R ${{ github.workspace }}/out/* .
+          
+          # 添加所有文件
           git add .
           
-          # Commit and push
-          git commit -m "Deploy to GitHub Pages [skip ci]" || echo "No changes to commit"
+          # 提交更改
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Deploy to GitHub Pages [skip ci]"
+          fi
+          
+          # 推送到gh-pages分支
           git push origin gh-pages --force
