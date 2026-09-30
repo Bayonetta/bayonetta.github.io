@@ -22,6 +22,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: false
+          ref: main
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -35,41 +36,10 @@ jobs:
       - name: Build with Next.js
         run: npm run build
 
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
 
-      - name: Deploy to gh-pages branch
-        run: |
-          # 创建一个全新的临时目录用于部署
-          mkdir -p /tmp/gh-pages-deploy
-          cd /tmp/gh-pages-deploy
-          
-          # 初始化git仓库
-          git init
-          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Bayonetta/bayonetta.github.io.git
-          
-          # 获取gh-pages分支（如果存在）或创建新分支
-          git fetch origin gh-pages || echo "gh-pages branch does not exist yet"
-          git checkout gh-pages || git checkout --orphan gh-pages
-          
-          # 清除现有文件（保留.git目录）
-          git rm -rf . || true
-          git clean -fxd || true
-          
-          # 复制构建好的文件
-          cp -R ${{ github.workspace }}/out/* .
-          
-          # 添加所有文件
-          git add .
-          
-          # 提交更改
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "Deploy to GitHub Pages [skip ci]"
-          fi
-          
-          # 推送到gh-pages分支
-          git push origin gh-pages --force
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v3
