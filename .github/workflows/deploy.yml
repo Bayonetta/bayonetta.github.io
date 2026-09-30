@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -15,14 +15,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  build-and-commit:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           persist-credentials: false
-          ref: main
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -36,10 +35,14 @@ jobs:
       - name: Build with Next.js
         run: npm run build
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./out
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v3
+      - name: Add out directory
+        run: git add -f out
+
+      - name: Commit changes
+        run: |
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update built site [skip ci]" && git push origin main)
