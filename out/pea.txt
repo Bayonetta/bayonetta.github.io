@@ -1,0 +1,63 @@
+2:I[7154,["250","static/chunks/250-5f49db60b5886166.js","991","static/chunks/app/(content)/pea/page-0be349c320974257.js"],"PageHeader"]
+3:I[5613,[],""]
+4:I[1778,[],""]
+5:I[6541,["250","static/chunks/250-5f49db60b5886166.js","120","static/chunks/120-b9a944e02a919c66.js","948","static/chunks/app/(content)/layout-de6d06542125152c.js"],"SiteHeader"]
+6:I[1110,["250","static/chunks/250-5f49db60b5886166.js","120","static/chunks/120-b9a944e02a919c66.js","948","static/chunks/app/(content)/layout-de6d06542125152c.js"],"SiteFooter"]
+8:I[3397,["185","static/chunks/app/layout-2181676f29e42fab.js"],"ThemeProvider"]
+9:I[9851,["185","static/chunks/app/layout-2181676f29e42fab.js"],"LocaleProvider"]
+a:I[8667,["250","static/chunks/250-5f49db60b5886166.js","160","static/chunks/app/not-found-e5d7aefdbb88d9f3.js"],""]
+7:Ta4e,// srcdoc 预览兼容补丁 —— 单一来源，被两处引用：
+//   1. src/app/layout.tsx  通过 readFileSync 读入，渲染进 <body> 行内 <script>；
+//   2. scripts/inject-srcdoc-compat.js 构建后把它移到每个 HTML 的 <head> 顶部。
+// 必须在任何 Next.js 框架脚本之前执行（详见 layout.tsx 中的注释）。
+//
+// srcdoc iframe 中 Next.js app router 的三个问题：
+//   1. new URL(path, "about:srcdoc") → TypeError：替换 window.URL 构造函数。
+//   2. history.replaceState/pushState → SecurityError：用 try/catch 吞掉。
+//   3. hydration 后用空树替换 SSR HTML → 黑屏：在 srcdoc 模式下挂起
+//      appBootstrap（self.__next_s 设为一个永不 resolve 的条目），
+//      让 hydration 永不执行，保留 SSR 静态页面。
+//      预览面板以 iframe 嵌入时无需客户端交互，静态渲染即满足查看需求。
+(function () {
+  if (window.location.href !== "about:srcdoc") return;
+
+  // ── 1. 阻止 hydration（保留 SSR 静态页面）──────────────────
+  // appBootstrap 会 reduce self.__next_s 中的脚本条目；条目 [null, null]
+  // 既无 src 也无 children，promise 永不 settle → hydrate 永不被调用。
+  self.__next_s = [[null, null]];
+
+  // ── 2. URL 构造函数 ──────────────────────────────────────
+  var base = "http://localhost/";
+  try {
+    var po = window.parent.location.origin;
+    if (/^https?:/i.test(po)) base = po + "/";
+  } catch (e) {}
+  var NativeURL = window.URL;
+  function SafeURL(u, b) {
+    try {
+      if (b === "about:srcdoc" && typeof u === "string" && !/^[a-z][a-z0-9+.\-]*:/i.test(u)) {
+        return new NativeURL(u, base);
+      }
+      return b === undefined ? new NativeURL(u) : new NativeURL(u, b);
+    } catch (e) {
+      return new NativeURL(String(u), base);
+    }
+  }
+  SafeURL.prototype = NativeURL.prototype;
+  if (NativeURL.createObjectURL) SafeURL.createObjectURL = NativeURL.createObjectURL;
+  if (NativeURL.revokeObjectURL) SafeURL.revokeObjectURL = NativeURL.revokeObjectURL;
+  window.URL = SafeURL;
+
+  // ── 3. history 方法（静默吞异常）─────────────────────────
+  var _push = window.history.pushState;
+  var _replace = window.history.replaceState;
+  window.history.pushState = function () {
+    try { return _push.apply(this, arguments); } catch (e) {}
+  };
+  window.history.replaceState = function () {
+    try { return _replace.apply(this, arguments); } catch (e) {}
+  };
+})();
+0:["TPfGrBLcVT3Jacahdjsnv",[[["",{"children":["(content)",{"children":["pea",{"children":["__PAGE__",{}]}]}]},"$undefined","$undefined",true],["",{"children":["(content)",{"children":["pea",{"children":["__PAGE__",{},["$L1",["$","div",null,{"className":"mx-auto w-full max-w-3xl px-4 py-10 sm:px-6","children":[["$","$L2",null,{"section":"pea"}],["$","div",null,{"className":"card flex flex-col items-center justify-center gap-2 px-6 py-20 text-center","children":[["$","p",null,{"className":"font-mono text-sm text-muted","children":"pea: pending"}],["$","p",null,{"className":"font-mono text-xs text-faint","children":"$$ pea add --name PeaScribe --desc \"字幕生成器\""}]]}]]}],null]]},["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","(content)","children","pea","children"],"loading":"$undefined","loadingStyles":"$undefined","loadingScripts":"$undefined","hasLoading":false,"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L4",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined","styles":null}]]},[null,["$","div",null,{"className":"flex min-h-screen flex-col","children":[["$","$L5",null,{}],["$","main",null,{"className":"flex-1","children":["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","(content)","children"],"loading":"$undefined","loadingStyles":"$undefined","loadingScripts":"$undefined","hasLoading":false,"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L4",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined","styles":null}]}],["$","$L6",null,{}]]}],null]]},[null,["$","html",null,{"lang":"zh-CN","suppressHydrationWarning":true,"children":["$","body",null,{"className":"__variable_f367f3 __variable_3c557b font-sans bg-bg text-fg antialiased","children":[["$","script",null,{"dangerouslySetInnerHTML":{"__html":"$7"}}],["$","$L8",null,{"children":["$","$L9",null,{"children":["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children"],"loading":"$undefined","loadingStyles":"$undefined","loadingScripts":"$undefined","hasLoading":false,"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L4",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":["$","$La",null,{}],"notFoundStyles":[],"styles":null}]}]}],"$undefined"]}]}],null]],[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/652590fd5cdab36f.css","precedence":"next","crossOrigin":""}]],"$Lb"]]]]
+b:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Pea 系列 · Bayonetta"}],["$","meta","3",{"name":"description","content":"个人主页 — 技术博客 · 图集 · 项目"}],["$","meta","4",{"property":"og:title","content":"Bayonetta · 赵帅"}],["$","meta","5",{"property":"og:description","content":"个人主页 — 技术博客 · 图集 · 项目"}],["$","meta","6",{"property":"og:url","content":"https://bayonetta.github.io/"}],["$","meta","7",{"property":"og:site_name","content":"Bayonetta"}],["$","meta","8",{"property":"og:locale","content":"zh_CN"}],["$","meta","9",{"property":"og:type","content":"website"}],["$","meta","10",{"name":"twitter:card","content":"summary"}],["$","meta","11",{"name":"twitter:title","content":"Bayonetta · 赵帅"}],["$","meta","12",{"name":"twitter:description","content":"个人主页 — 技术博客 · 图集 · 项目"}],["$","link","13",{"rel":"icon","href":"/favicon.ico","type":"image/x-icon","sizes":"16x16"}]]
+1:null

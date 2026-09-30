@@ -1,0 +1,66 @@
+3:I[5613,[],""]
+5:I[1778,[],""]
+6:I[6541,["250","static/chunks/250-5f49db60b5886166.js","120","static/chunks/120-b9a944e02a919c66.js","948","static/chunks/app/(content)/layout-de6d06542125152c.js"],"SiteHeader"]
+7:I[1110,["250","static/chunks/250-5f49db60b5886166.js","120","static/chunks/120-b9a944e02a919c66.js","948","static/chunks/app/(content)/layout-de6d06542125152c.js"],"SiteFooter"]
+9:I[3397,["185","static/chunks/app/layout-2181676f29e42fab.js"],"ThemeProvider"]
+a:I[9851,["185","static/chunks/app/layout-2181676f29e42fab.js"],"LocaleProvider"]
+b:I[8667,["250","static/chunks/250-5f49db60b5886166.js","160","static/chunks/app/not-found-e5d7aefdbb88d9f3.js"],""]
+4:["slug","2013-12-6-Interview_summary","d"]
+8:Ta4e,// srcdoc 预览兼容补丁 —— 单一来源，被两处引用：
+//   1. src/app/layout.tsx  通过 readFileSync 读入，渲染进 <body> 行内 <script>；
+//   2. scripts/inject-srcdoc-compat.js 构建后把它移到每个 HTML 的 <head> 顶部。
+// 必须在任何 Next.js 框架脚本之前执行（详见 layout.tsx 中的注释）。
+//
+// srcdoc iframe 中 Next.js app router 的三个问题：
+//   1. new URL(path, "about:srcdoc") → TypeError：替换 window.URL 构造函数。
+//   2. history.replaceState/pushState → SecurityError：用 try/catch 吞掉。
+//   3. hydration 后用空树替换 SSR HTML → 黑屏：在 srcdoc 模式下挂起
+//      appBootstrap（self.__next_s 设为一个永不 resolve 的条目），
+//      让 hydration 永不执行，保留 SSR 静态页面。
+//      预览面板以 iframe 嵌入时无需客户端交互，静态渲染即满足查看需求。
+(function () {
+  if (window.location.href !== "about:srcdoc") return;
+
+  // ── 1. 阻止 hydration（保留 SSR 静态页面）──────────────────
+  // appBootstrap 会 reduce self.__next_s 中的脚本条目；条目 [null, null]
+  // 既无 src 也无 children，promise 永不 settle → hydrate 永不被调用。
+  self.__next_s = [[null, null]];
+
+  // ── 2. URL 构造函数 ──────────────────────────────────────
+  var base = "http://localhost/";
+  try {
+    var po = window.parent.location.origin;
+    if (/^https?:/i.test(po)) base = po + "/";
+  } catch (e) {}
+  var NativeURL = window.URL;
+  function SafeURL(u, b) {
+    try {
+      if (b === "about:srcdoc" && typeof u === "string" && !/^[a-z][a-z0-9+.\-]*:/i.test(u)) {
+        return new NativeURL(u, base);
+      }
+      return b === undefined ? new NativeURL(u) : new NativeURL(u, b);
+    } catch (e) {
+      return new NativeURL(String(u), base);
+    }
+  }
+  SafeURL.prototype = NativeURL.prototype;
+  if (NativeURL.createObjectURL) SafeURL.createObjectURL = NativeURL.createObjectURL;
+  if (NativeURL.revokeObjectURL) SafeURL.revokeObjectURL = NativeURL.revokeObjectURL;
+  window.URL = SafeURL;
+
+  // ── 3. history 方法（静默吞异常）─────────────────────────
+  var _push = window.history.pushState;
+  var _replace = window.history.replaceState;
+  window.history.pushState = function () {
+    try { return _push.apply(this, arguments); } catch (e) {}
+  };
+  window.history.replaceState = function () {
+    try { return _replace.apply(this, arguments); } catch (e) {}
+  };
+})();
+0:["TPfGrBLcVT3Jacahdjsnv",[[["",{"children":["(content)",{"children":["blog",{"children":[["slug","2013-12-6-Interview_summary","d"],{"children":["__PAGE__?{\"slug\":\"2013-12-6-Interview_summary\"}",{}]}]}]}]},"$undefined","$undefined",true],["",{"children":["(content)",{"children":["blog",{"children":[["slug","2013-12-6-Interview_summary","d"],{"children":["__PAGE__",{},["$L1","$L2",null]]},["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","(content)","children","blog","children","$4","children"],"loading":"$undefined","loadingStyles":"$undefined","loadingScripts":"$undefined","hasLoading":false,"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined","styles":null}]]},["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","(content)","children","blog","children"],"loading":"$undefined","loadingStyles":"$undefined","loadingScripts":"$undefined","hasLoading":false,"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined","styles":null}]]},[null,["$","div",null,{"className":"flex min-h-screen flex-col","children":[["$","$L6",null,{}],["$","main",null,{"className":"flex-1","children":["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","(content)","children"],"loading":"$undefined","loadingStyles":"$undefined","loadingScripts":"$undefined","hasLoading":false,"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined","styles":null}]}],["$","$L7",null,{}]]}],null]]},[null,["$","html",null,{"lang":"zh-CN","suppressHydrationWarning":true,"children":["$","body",null,{"className":"__variable_f367f3 __variable_3c557b font-sans bg-bg text-fg antialiased","children":[["$","script",null,{"dangerouslySetInnerHTML":{"__html":"$8"}}],["$","$L9",null,{"children":["$","$La",null,{"children":["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children"],"loading":"$undefined","loadingStyles":"$undefined","loadingScripts":"$undefined","hasLoading":false,"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":["$","$Lb",null,{}],"notFoundStyles":[],"styles":null}]}]}],"$undefined"]}]}],null]],[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/652590fd5cdab36f.css","precedence":"next","crossOrigin":""}]],"$Lc"]]]]
+d:I[7971,["250","static/chunks/250-5f49db60b5886166.js","471","static/chunks/471-e95f96367eab421c.js","825","static/chunks/app/(content)/blog/%5Bslug%5D/page-702863d8110f73b1.js"],"PostView"]
+2:["$","$Ld",null,{"variants":[{"lang":"zh","title":"面试总结","date":"2013-12-06","description":"Experience","tags":["面试"],"updated":"$undefined","readingTime":6,"comments":true,"content":"$Le"}]}]
+c:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"面试总结 · Bayonetta"}],["$","meta","3",{"name":"description","content":"Experience"}],["$","meta","4",{"property":"og:title","content":"Bayonetta · 赵帅"}],["$","meta","5",{"property":"og:description","content":"个人主页 — 技术博客 · 图集 · 项目"}],["$","meta","6",{"property":"og:url","content":"https://bayonetta.github.io/"}],["$","meta","7",{"property":"og:site_name","content":"Bayonetta"}],["$","meta","8",{"property":"og:locale","content":"zh_CN"}],["$","meta","9",{"property":"og:type","content":"website"}],["$","meta","10",{"name":"twitter:card","content":"summary"}],["$","meta","11",{"name":"twitter:title","content":"Bayonetta · 赵帅"}],["$","meta","12",{"name":"twitter:description","content":"个人主页 — 技术博客 · 图集 · 项目"}],["$","link","13",{"rel":"icon","href":"/favicon.ico","type":"image/x-icon","sizes":"16x16"}]]
+1:null
+e:[["$","p",null,{"children":"从今初3月份开始，陆续奔波于各大招聘会。为了自己的人生和未来，也要开始积极的准备。"}],"\n",["$","h2",null,{"children":"豆瓣"}],"\n",["$","p",null,{"children":"在初次尝试网易的笔试后，参加了豆瓣的面试，当然豆瓣也是我最care的公司。最初有场笔试，两张试题，一张重视基础算法和学习能力，一张是基础的Android相关试题。答得还算顺利。"}],"\n",["$","p",null,{"children":"大概三天后，收到HR的短信，通知我参加面试，由于我人在武汉，所以是远程面试。"}],"\n",["$","p",null,{"children":"面试有两轮:"}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":"第一轮面试官是Android负责人Bear老师，也就是我后来的mentor"}],"\n",["$","li",null,{"children":"第二轮遇到了豆瓣的技术总监清风老师，绝对的传奇人物（可以去知乎搜滴蜡，是的，绝对闷骚）"}],"\n"]}],"\n",["$","p",null,{"children":"内容大多与项目相关，所以过程还算比较容易，最终顺利拿到offer。"}],"\n",["$","p",null,{"children":"因为已经拿到了最想要的offer，所以一直到实习开始，只面试过这一次。"}],"\n",["$","figure",null,{"children":[["$","img",null,{"src":"/images/2013-12-06-1.jpg","alt":""}],["$","figcaption",null,{"children":"豆瓣不为人知的文艺角落"}]]}],"\n",["$","p",null,{"children":"PS：我一定要吐槽豆瓣的面试效率，这两轮面试实际上间隔了3天，而且每次到了约定的面试时间总是会拖延半个多小时，而且都是我打电话过去，对方才通知相关面试官过来，这点让我觉得很不靠谱。"}],"\n",["$","h2",null,{"children":"小米"}],"\n",["$","p",null,{"children":"在豆瓣实习到9月份的时候，开始渐渐对于自己所处的境地有些不满。因为所分配的项目实际处于无人监管的状态，没有PM，没有UI，因为项目本身属于实验项目，很少收到实用的用户反馈，所以自己渐渐有些失去动力，加上第一次接触重构，再没有mentor指导的情况下，也有些力不从心。"}],"\n",["$","figure",null,{"children":[["$","img",null,{"src":"/images/2013-12-06-2.jpg","alt":""}],["$","figcaption",null,{"children":"不愧是百亿级的公司，门面非常气派，可惜镜头太渣，晚上拍不出效果"}]]}],"\n",["$","p",null,{"children":"这时候收到碎总的邀请，综合了考虑了一下所处的境地，决定去小米试一试。面试的部门是浏览器组。\r\n从豆瓣过去大概用了二个小时，当时以为很快会结束，就没吃晚饭，结果面了3个半小时，可怜了我的胃。当晚共两面。"}],"\n",["$","h3",null,{"children":"一面"}],"\n",["$","p",null,{"children":"大多为基础部分，包括Android，算法，数据结构，设计模式等等。"}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":"算法 ：求出二叉树的最短路径（递归）；用栈来实现一个可以返回最大值的新型栈 （需要辅助空间来存储每次push后新变化的最大值）"}],"\n",["$","li",null,{"children":"数据结构：实现一个逆序的单链表"}],"\n",["$","li",null,{"children":"设计模式：单例模式"}],"\n"]}],"\n",["$","p",null,{"children":"由于之前的算法基础不是很好，而且我之前准备时主要的精力都放在Android上面了，所以算法部分答得并不理想。后来发现算法题都是《编程之美》的原题，后悔没有提前准备下。"}],"\n",["$","h3",null,{"children":"二面"}],"\n",["$","p",null,{"children":"纯算法，面了两道题："}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":"通讯录姓名的快速检索（包括首字母，全拼音，全汉字）"}],"\n",["$","li",null,{"children":"为一段字符串去掉空格（不能引入辅助空间）"}],"\n"]}],"\n",["$","h3",null,{"children":"三面"}],"\n",["$","p",null,{"children":"十一长假之后，接到通知要去和浏览器的老大简单聊一聊并确认一下入职事宜。我真的是抱着简单聊一聊的心态，结果是另一场面试。由于准备不足（十一疯狂的去了大西北玩了一圈），结果很糟糕，就这样，很戏剧性的丧失了进入小米的机会。其实也更多是自身原因导致的，所以之后的一个多月在寻找更多机会的同时，也在有针对性的弥补自身的弱势。"}],"\n",["$","h2",null,{"children":"友盟"}],"\n",["$","p",null,{"children":"我去的时候正好赶上面试官去开会，所以基本一下午的时间都在闲聊。。。"}],"\n",["$","p",null,{"children":"大概快吃晚饭的时候，终于等来了面试官。大概面试了一个小时吧，结果是需要和HR再沟通，今年友盟可能没有校招计划，估计可能项目组不太缺人吧。"}],"\n",["$","p",null,{"children":"面试题印象比较深的有两道:"}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":"git diff的实现原理"}],"\n",["$","li",null,{"children":"两个人通过电话联系，如何确认传递信息的可信度。（通过可信第三方或者约定一对不可短时间伪造的大素数之积）"}],"\n"]}],"\n",["$","h2",null,{"children":"豌豆荚"}],"\n",["$","p",null,{"children":"实在没想到豌豆荚来的这么快，还是其他公司的HR效率太低了，之前听说豌豆荚面试很严格，所以已经注定了这场面试很艰苦。"}],"\n",["$","figure",null,{"children":[["$","img",null,{"src":"/images/2013-12-06-3.jpg","alt":""}],["$","figcaption",null,{"children":"中午在豌豆荚蹭了会新番《进击的巨人》"}]]}],"\n",["$","h3",null,{"children":"一面"}],"\n",["$","p",null,{"children":"围绕我的项目深入的谈了一下，暴露了蛮多经验不足导致的实际应用场景中存在的隐患。然后是一道算法：矩阵顺时针遍历输出。因为对于纸上写代码练得不够，所以还是写了比较久。"}],"\n",["$","p",null,{"children":"代码存在一些问题，最常见也是我总是遗忘的————对输入参数的判断。"}],"\n",["$","h3",null,{"children":"二面"}],"\n",["$","p",null,{"children":"荣幸见到了前Google的刘春雨老师，人蛮友善的。他也是先问了下项目相关的问题，然后出了两道算法题。"}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":"在二维平面内存在很多点，求出其中一条可以贯穿最多点得直线。"}],"\n",["$","li",null,{"children":"具体题目忘记了，记得需要递归总结表达式"}],"\n"]}],"\n",["$","p",null,{"children":"其实，据说豌豆荚的面试一共要5-7轮的，但是我的面试已经到此为止了。"}],"\n",["$","p",null,{"children":"豌豆荚的反馈是算法基础不够扎实，代码写的较慢，而且问答时总是有延迟。。"}],"\n",["$","h2",null,{"children":"Weico"}],"\n",["$","p",null,{"children":"开始先是笔试，然后在电脑上写了两个Demo。一个是微信朋友圈分享，另一个是微博Timeline，当然时间有限我只写了朋友圈分享，第二个只是简单说了下思路。这些东西不难，主要考察实际编程能力，这个我已经练了很久，所以顺利收到offer。"}],"\n",["$","figure",null,{"children":[["$","img",null,{"src":"/images/2013-12-06-4.jpg","alt":""}],["$","figcaption",null,{"children":"知名海产品公司吉祥物"}]]}],"\n",["$","h2",null,{"children":"布丁移动"}],"\n",["$","p",null,{"children":"面试了大概一个半小时，问了很多的基础，Java偏多，而且面试官更多关注的时语言特性，所以我这种只注重使用技能的只能抹汗了。。唉，一定要将Java编程思想和Jvm原理看完。"}],"\n",["$","h2",null,{"children":"知乎"}],"\n",["$","p",null,{"children":"知乎也是我心目中理想的公司，工作环境也不错。"}],"\n",["$","figure",null,{"children":[["$","img",null,{"src":"/images/2013-12-06-5.jpg","alt":""}],["$","figcaption",null,{"children":"知乎环境很赞，很有良心企业的感觉"}]]}],"\n",["$","p",null,{"children":"一共两面："}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":"聊了Andorid基础，写了一段代码，实现数字到字符串的转换，我的代码效率不高，在面试官的引导下发现了问题。"}],"\n",["$","li",null,{"children":"测试相关，以及散列表的原理。。。直接跪了"}],"\n"]}],"\n",["$","h2",null,{"children":"总结"}],"\n",["$","p",null,{"children":"这整个过程经历下来也算蛮艰苦的，暴露出的问题也集中在算法和Java基础方面，毕竟一个公司在面试时更偏重的也是基础部分。"}],"\n",["$","p",null,{"children":"最后附张新公司的靓照："}],"\n",["$","figure",null,{"children":[["$","img",null,{"src":"/images/2013-12-06-6.jpg","alt":""}],["$","figcaption",null,{}]]}]]
