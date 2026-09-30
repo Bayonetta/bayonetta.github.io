@@ -1,0 +1,66 @@
+3:I[5613,[],""]
+5:I[1778,[],""]
+6:I[6541,["250","static/chunks/250-5f49db60b5886166.js","120","static/chunks/120-b9a944e02a919c66.js","948","static/chunks/app/(content)/layout-de6d06542125152c.js"],"SiteHeader"]
+7:I[1110,["250","static/chunks/250-5f49db60b5886166.js","120","static/chunks/120-b9a944e02a919c66.js","948","static/chunks/app/(content)/layout-de6d06542125152c.js"],"SiteFooter"]
+9:I[3397,["185","static/chunks/app/layout-2181676f29e42fab.js"],"ThemeProvider"]
+a:I[9851,["185","static/chunks/app/layout-2181676f29e42fab.js"],"LocaleProvider"]
+b:I[8667,["250","static/chunks/250-5f49db60b5886166.js","160","static/chunks/app/not-found-e5d7aefdbb88d9f3.js"],""]
+4:["slug","2013-12-4-Hello_world","d"]
+8:Ta4e,// srcdoc 预览兼容补丁 —— 单一来源，被两处引用：
+//   1. src/app/layout.tsx  通过 readFileSync 读入，渲染进 <body> 行内 <script>；
+//   2. scripts/inject-srcdoc-compat.js 构建后把它移到每个 HTML 的 <head> 顶部。
+// 必须在任何 Next.js 框架脚本之前执行（详见 layout.tsx 中的注释）。
+//
+// srcdoc iframe 中 Next.js app router 的三个问题：
+//   1. new URL(path, "about:srcdoc") → TypeError：替换 window.URL 构造函数。
+//   2. history.replaceState/pushState → SecurityError：用 try/catch 吞掉。
+//   3. hydration 后用空树替换 SSR HTML → 黑屏：在 srcdoc 模式下挂起
+//      appBootstrap（self.__next_s 设为一个永不 resolve 的条目），
+//      让 hydration 永不执行，保留 SSR 静态页面。
+//      预览面板以 iframe 嵌入时无需客户端交互，静态渲染即满足查看需求。
+(function () {
+  if (window.location.href !== "about:srcdoc") return;
+
+  // ── 1. 阻止 hydration（保留 SSR 静态页面）──────────────────
+  // appBootstrap 会 reduce self.__next_s 中的脚本条目；条目 [null, null]
+  // 既无 src 也无 children，promise 永不 settle → hydrate 永不被调用。
+  self.__next_s = [[null, null]];
+
+  // ── 2. URL 构造函数 ──────────────────────────────────────
+  var base = "http://localhost/";
+  try {
+    var po = window.parent.location.origin;
+    if (/^https?:/i.test(po)) base = po + "/";
+  } catch (e) {}
+  var NativeURL = window.URL;
+  function SafeURL(u, b) {
+    try {
+      if (b === "about:srcdoc" && typeof u === "string" && !/^[a-z][a-z0-9+.\-]*:/i.test(u)) {
+        return new NativeURL(u, base);
+      }
+      return b === undefined ? new NativeURL(u) : new NativeURL(u, b);
+    } catch (e) {
+      return new NativeURL(String(u), base);
+    }
+  }
+  SafeURL.prototype = NativeURL.prototype;
+  if (NativeURL.createObjectURL) SafeURL.createObjectURL = NativeURL.createObjectURL;
+  if (NativeURL.revokeObjectURL) SafeURL.revokeObjectURL = NativeURL.revokeObjectURL;
+  window.URL = SafeURL;
+
+  // ── 3. history 方法（静默吞异常）─────────────────────────
+  var _push = window.history.pushState;
+  var _replace = window.history.replaceState;
+  window.history.pushState = function () {
+    try { return _push.apply(this, arguments); } catch (e) {}
+  };
+  window.history.replaceState = function () {
+    try { return _replace.apply(this, arguments); } catch (e) {}
+  };
+})();
+0:["TPfGrBLcVT3Jacahdjsnv",[[["",{"children":["(content)",{"children":["blog",{"children":[["slug","2013-12-4-Hello_world","d"],{"children":["__PAGE__?{\"slug\":\"2013-12-4-Hello_world\"}",{}]}]}]}]},"$undefined","$undefined",true],["",{"children":["(content)",{"children":["blog",{"children":[["slug","2013-12-4-Hello_world","d"],{"children":["__PAGE__",{},["$L1","$L2",null]]},["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","(content)","children","blog","children","$4","children"],"loading":"$undefined","loadingStyles":"$undefined","loadingScripts":"$undefined","hasLoading":false,"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined","styles":null}]]},["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","(content)","children","blog","children"],"loading":"$undefined","loadingStyles":"$undefined","loadingScripts":"$undefined","hasLoading":false,"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined","styles":null}]]},[null,["$","div",null,{"className":"flex min-h-screen flex-col","children":[["$","$L6",null,{}],["$","main",null,{"className":"flex-1","children":["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","(content)","children"],"loading":"$undefined","loadingStyles":"$undefined","loadingScripts":"$undefined","hasLoading":false,"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined","styles":null}]}],["$","$L7",null,{}]]}],null]]},[null,["$","html",null,{"lang":"zh-CN","suppressHydrationWarning":true,"children":["$","body",null,{"className":"__variable_f367f3 __variable_3c557b font-sans bg-bg text-fg antialiased","children":[["$","script",null,{"dangerouslySetInnerHTML":{"__html":"$8"}}],["$","$L9",null,{"children":["$","$La",null,{"children":["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children"],"loading":"$undefined","loadingStyles":"$undefined","loadingScripts":"$undefined","hasLoading":false,"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":["$","$Lb",null,{}],"notFoundStyles":[],"styles":null}]}]}],"$undefined"]}]}],null]],[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/652590fd5cdab36f.css","precedence":"next","crossOrigin":""}]],"$Lc"]]]]
+d:I[7971,["250","static/chunks/250-5f49db60b5886166.js","471","static/chunks/471-e95f96367eab421c.js","825","static/chunks/app/(content)/blog/%5Bslug%5D/page-702863d8110f73b1.js"],"PostView"]
+2:["$","$Ld",null,{"variants":[{"lang":"zh","title":"Hello World","date":"2013-12-04","description":"Introduction","tags":[],"updated":"$undefined","readingTime":1,"comments":true,"content":"$Le"}]}]
+c:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Hello World · Bayonetta"}],["$","meta","3",{"name":"description","content":"Introduction"}],["$","meta","4",{"property":"og:title","content":"Bayonetta · 赵帅"}],["$","meta","5",{"property":"og:description","content":"个人主页 — 技术博客 · 图集 · 项目"}],["$","meta","6",{"property":"og:url","content":"https://bayonetta.github.io/"}],["$","meta","7",{"property":"og:site_name","content":"Bayonetta"}],["$","meta","8",{"property":"og:locale","content":"zh_CN"}],["$","meta","9",{"property":"og:type","content":"website"}],["$","meta","10",{"name":"twitter:card","content":"summary"}],["$","meta","11",{"name":"twitter:title","content":"Bayonetta · 赵帅"}],["$","meta","12",{"name":"twitter:description","content":"个人主页 — 技术博客 · 图集 · 项目"}],["$","link","13",{"rel":"icon","href":"/favicon.ico","type":"image/x-icon","sizes":"16x16"}]]
+1:null
+e:[["$","p",null,{"children":"第一篇日志就以Hello World开头吧，也算是一种惯例，或者叫Blog【0】也可以。"}],"\n",["$","p",null,{"children":"之前一直有想写日志的冲动，只是一直放在evernote上，比较零散，一直等闲下来可以去整理整理。"}],"\n",["$","p",null,{"children":"现在有了github pages，可以方便的运用现成的模板和免费的服务器来托管，无限流量，无限空间，这简直太赞了！！"}],"\n",["$","p",null,{"children":"这几天再熟悉一下jekyll，感觉上手并不容易，在ArchLinux和Mac OSX下的配置体验还有一些细微差异，相较而言，还是mac友好一些。"}],"\n",["$","p",null,{"children":"今后要努力的当一名优质的内容提供者！"}],"\n",["$","p",null,{"children":"PS: 博客的名字来自于我最爱的同名歌曲，由林夕谱词，杨千嬅演唱。【丁目】为日本的街道名。"}],"\n",["$","p",null,{"children":"附相关教程若干："}],"\n",["$","ul",null,{"children":["\n",["$","li",null,{"children":["$","a",null,{"href":"http://www.soimort.org/posts/101/","children":"像黑客一样写博客——Jekyll入门"}]}],"\n",["$","li",null,{"children":["$","a",null,{"href":"http://www.ruanyifeng.com/blog/2012/08/blogging_with_jekyll.html","children":"搭建一个免费的，无限流量的Blog----github Pages和Jekyll入门"}]}],"\n",["$","li",null,{"children":["$","a",null,{"href":"http://pizn.github.io/2011/11/15/use-disqus-for-your-post.html","children":"为博客添加 DisQus 评论"}]}],"\n"]}]]
