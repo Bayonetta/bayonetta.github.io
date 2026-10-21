@@ -35,7 +35,7 @@ export default function AboutPage() {
         <div className="mt-5 flex flex-wrap items-center gap-4 border-t border-line pt-4 text-xs text-muted">
           <span className="inline-flex items-center gap-1.5">
             <MapPin className="h-3.5 w-3.5" />
-            {profile.location}
+            {profile.location[locale as keyof typeof profile.location]}
           </span>
           <a
             href={site.github}

@@ -47,6 +47,7 @@ next-env.d.ts
 /.file-versions/
 /.mcp.json
 /.playwright-mcp/
+/.workbuddy-ai/
 /*.artifact.json
 /home-page.png
 

@@ -17,7 +17,11 @@ export const site = {
     avatar: "https://avatars.githubusercontent.com/u/3266065?s=200&v=4",
     role: "Software Engineer",
     tagline: "iOS / macOS · Frontend · Tooling",
-    location: "Shanghai, China",
+    location: {
+      zh: "石川县金泽市",
+      en: "Kanazawa, Ishikawa, Japan",
+      ja: "石川県金沢市",
+    },
     bio: {
       zh: "专注 iOS / macOS 与前端开发的工程师。",
       en: "Software engineer focused on iOS / macOS and frontend.",

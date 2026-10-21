@@ -33,6 +33,8 @@ export const ja: Dict = {
     updatedAt: "更新",
     readingTime: "{min} 分",
     comments: "コメント",
+    machineTranslation:
+      "この記事は機械翻訳ツールにより自動生成されたもので、参考用です。意味に齟齬がある場合は、中国語の原文を基準としてください。",
   },
   gallery: {
     title: "Gallery",

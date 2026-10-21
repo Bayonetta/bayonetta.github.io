@@ -33,6 +33,7 @@ export const zh: Dict = {
     updatedAt: "更新于",
     readingTime: "{min} 分钟",
     comments: "评论",
+    machineTranslation: "本文由机器翻译工具自动生成，仅供参考；如有歧义，请以中文原文为准。",
   },
   gallery: {
     title: "Gallery",

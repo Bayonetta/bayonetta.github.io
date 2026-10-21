@@ -15,6 +15,7 @@ export type PostVariant = {
   updated?: string;
   readingTime: number;
   comments?: boolean;
+  machineTranslated?: boolean;
   content: React.ReactNode;
 };
 
@@ -103,6 +104,12 @@ export function PostView({ variants }: { variants: PostVariant[] }) {
       </header>
 
       <div className="prose max-w-none">{variant.content}</div>
+
+      {variant.machineTranslated && (
+        <p className="mt-8 border-t border-line pt-4 text-xs leading-relaxed text-faint">
+          {t.blog.machineTranslation}
+        </p>
+      )}
 
       {variant.comments !== false && <CommentSection key={lang} />}
     </article>

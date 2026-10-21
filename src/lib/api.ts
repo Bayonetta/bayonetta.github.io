@@ -16,6 +16,8 @@ export type PostMeta = {
   category?: string;
   updated?: string;
   comments?: boolean;
+  /** 该语言版本是否由机器翻译工具生成（zh 原文缺省为 false） */
+  machineTranslated?: boolean;
   readingTime: number;
   /** 纯文本化后的正文片段，用于客户端搜索 */
   searchText: string;
@@ -83,6 +85,7 @@ function toMeta(file: string): PostMeta | null {
     category: data.category as string | undefined,
     updated: data.updated as string | undefined,
     comments: data.comments as boolean | undefined,
+    machineTranslated: data.machineTranslated === true,
     readingTime: estimateReadingTime(content),
     searchText: clean.slice(0, 3000),
   };

@@ -48,6 +48,7 @@ export default async function PostPage({
       updated: post.updated,
       readingTime: post.readingTime,
       comments: post.comments,
+      machineTranslated: post.machineTranslated,
       content: (
         <MDXRemote
           source={post.content}

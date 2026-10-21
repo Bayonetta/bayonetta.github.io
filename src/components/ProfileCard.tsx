@@ -47,7 +47,7 @@ export function ProfileCard() {
         <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-faint">
           <span className="inline-flex items-center gap-1">
             <MapPin className="h-3.5 w-3.5" />
-            {profile.location}
+            {profile.location[locale]}
           </span>
           <a
             href={site.github}
