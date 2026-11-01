@@ -61,6 +61,7 @@ export const en: Dict = {
     pubKindInternational: "International conference",
     pubKindDomestic: "Domestic workshop",
     nonReviewed: "Non-peer-reviewed",
+    indie: "Independent Development",
     works: "Works",
     series: "Series",
     interests: "Interests",

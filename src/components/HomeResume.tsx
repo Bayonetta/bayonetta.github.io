@@ -11,6 +11,7 @@ import {
   series,
   works,
 } from "@/lib/resume";
+import type { MouseEvent } from "react";
 import type { Locale } from "@/i18n/types";
 
 function SectionTitle({ label }: { label: string }) {
@@ -62,38 +63,22 @@ function EducationList() {
   );
 }
 
+// 工作经历：只呈现时间线节点，一行一个事件。
 function ExperienceList() {
-  const { locale, t } = useLocale();
+  const { locale } = useLocale();
   if (experience.length === 0) return <Empty text="~/experience" />;
   const l = locale as Locale;
   return (
-    <ol className="mt-6 space-y-7">
+    <ol className="mt-6 space-y-3">
       {experience.map((item, i) => {
-        const role = item.role?.[l] ?? item.role?.zh;
-        const summary = item.summary?.[l] ?? item.summary?.zh;
+        const text = item.text?.[l] ?? item.text?.zh;
         return (
           <li
             key={i}
             className="grid gap-x-8 gap-y-1 sm:grid-cols-[160px_1fr] sm:items-baseline"
           >
-            <p className="font-mono text-sm text-accent">
-              {item.period}
-              {item.ongoing ? ` — ${t.resume.present}` : ""}
-            </p>
-            <div className="min-w-0">
-              <p className="text-sm font-medium leading-snug">{item.company}</p>
-              {role && <p className="mt-0.5 text-xs text-muted">{role}</p>}
-              {summary && (
-                <p className="mt-2 text-xs leading-relaxed text-muted">
-                  {summary}
-                </p>
-              )}
-              {item.stack?.length ? (
-                <p className="mt-2 font-mono text-[11px] leading-relaxed text-faint">
-                  {item.stack.join(" · ")}
-                </p>
-              ) : null}
-            </div>
+            <p className="font-mono text-sm text-accent">{item.period}</p>
+            <p className="min-w-0 text-sm leading-relaxed">{text}</p>
           </li>
         );
       })}
@@ -119,7 +104,7 @@ function PublicationList() {
             className="grid gap-x-8 gap-y-1 sm:grid-cols-[160px_1fr] sm:items-baseline"
           >
             <div className="flex items-baseline gap-2 sm:block">
-              <p className="font-mono text-sm text-faint">{item.year}</p>
+              <p className="font-mono text-sm text-faint">{item.date}</p>
               <p className="font-mono text-[10px] uppercase tracking-widest text-faint sm:mt-1">
                 {kind}
               </p>
@@ -150,7 +135,7 @@ function PublicationList() {
                 )}
               </p>
               <p className="mt-1 font-mono text-[11px] leading-relaxed text-faint">
-                {item.place} · {item.date}
+                {item.place}
                 {item.reviewed === false && ` · ${t.resume.nonReviewed}`}
               </p>
             </div>
@@ -181,15 +166,31 @@ function InterestList() {
 }
 
 function WorksGrid() {
+  const { locale } = useLocale();
+  const l = locale as Locale;
   const all = [...series, ...works];
+
+  // 预览面板常把页面放进 sandbox iframe，target="_blank" 会被静默拦截。
+  // 这里显式开新窗，被拦截时退回当前窗口跳转，保证一定跳得出去。
+  const openExternal = (event: React.MouseEvent, href: string) => {
+    event.preventDefault();
+    const win = window.open(href, "_blank");
+    if (win) {
+      win.opener = null;
+    } else {
+      window.location.href = href;
+    }
+  };
+
   return (
     <div className="mt-6 grid gap-4 sm:grid-cols-2">
       {all.map((item) => {
+        const desc = item.desc?.[l] ?? item.desc?.zh;
         const inner = (
           <>
             <div>
               <h4 className="font-mono text-sm font-semibold">{item.name}</h4>
-              <p className="mt-1 text-sm text-muted">{item.desc}</p>
+              {desc && <p className="mt-1 text-sm text-muted">{desc}</p>}
             </div>
             <ArrowUpRight className="h-5 w-5 shrink-0 text-faint transition-colors group-hover:text-accent" />
           </>
@@ -200,6 +201,7 @@ function WorksGrid() {
             href={item.href}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={(event) => openExternal(event, item.href)}
             className="card group flex items-center justify-between p-5 transition-colors hover:border-accent"
           >
             {inner}
@@ -235,6 +237,14 @@ export function HomeResume() {
         <ExperienceList />
       </section>
 
+      {/* 独立开发（仅在确有作品时展示） */}
+      {works.length + series.length > 0 && (
+        <section data-od-id="home-indie" className="border-t border-line pt-8">
+          <SectionTitle label={t.resume.indie} />
+          <WorksGrid />
+        </section>
+      )}
+
       {/* 学术发表：全行竖向 */}
       <section className="border-t border-line pt-8">
         <SectionTitle label={t.resume.publications} />
@@ -246,14 +256,6 @@ export function HomeResume() {
         <SectionTitle label={t.resume.interests} />
         <InterestList />
       </section>
-
-      {/* 作品集（仅在确有作品时展示） */}
-      {works.length + series.length > 0 && (
-        <section data-od-id="home-works" className="border-t border-line pt-8">
-          <SectionTitle label={t.resume.works} />
-          <WorksGrid />
-        </section>
-      )}
     </div>
   );
 }

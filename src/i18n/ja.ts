@@ -61,6 +61,7 @@ export const ja: Dict = {
     pubKindInternational: "国際会議",
     pubKindDomestic: "国内研究会",
     nonReviewed: "査読なし",
+    indie: "個人開発",
     works: "作品",
     series: "シリーズ",
     interests: "趣味",

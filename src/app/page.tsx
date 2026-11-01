@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight, FileText, Github, Images } from "lucide-react";
+import { FileText, Github, Images } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LangToggle } from "@/components/LangToggle";
 import { HomeResume } from "@/components/HomeResume";
@@ -75,30 +75,6 @@ export default function Home() {
           <span className="text-accent">{t.hero.whoamiOut}</span>
         </p>
         <p className="mt-2 text-sm text-muted">{t.hero.tagline}</p>
-
-        {/* 系列官网入口 */}
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-          <a
-            href={site.lyuSeries}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-od-id="btn-lyu-series"
-            className="inline-flex items-center gap-1.5 rounded-md border border-line bg-surface px-4 py-2 font-mono text-sm text-muted transition-colors hover:border-accent hover:text-accent"
-          >
-            {t.hero.lyuSite}
-            <ArrowUpRight className="h-4 w-4" />
-          </a>
-          <a
-            href={site.peaSeries}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-od-id="btn-pea-series"
-            className="inline-flex items-center gap-1.5 rounded-md border border-line bg-surface px-4 py-2 font-mono text-sm text-muted transition-colors hover:border-accent hover:text-accent"
-          >
-            {t.hero.peaSite}
-            <ArrowUpRight className="h-4 w-4" />
-          </a>
-        </div>
       </header>
 
       {/* 中部：全行履历（教育 / 学术 / 兴趣） */}

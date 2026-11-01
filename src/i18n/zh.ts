@@ -60,6 +60,7 @@ export const zh: Dict = {
     pubKindInternational: "国际会议",
     pubKindDomestic: "国内研究会",
     nonReviewed: "非同行评审",
+    indie: "独立开发",
     works: "作品",
     series: "系列",
     interests: "兴趣爱好",

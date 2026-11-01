@@ -93,6 +93,10 @@ function inlineImages(html) {
   });
 }
 
+// 单文件预览剥离了 Next 的 JS，外链的 target="_blank" 在预览面板里可能被静默拦截。
+// 注入一段极小的兜底脚本：优先开新窗，被拦截时退回当前窗口跳转。
+const EXTERNAL_LINK_FALLBACK = `<script>(function(){document.addEventListener("click",function(e){var a=e.target&&e.target.closest?e.target.closest('a[target="_blank"]'):null;if(!a||!a.href)return;e.preventDefault();var w=window.open(a.href,"_blank");if(w){try{w.opener=null}catch(_){}}else{window.location.href=a.href}},true)})();</script>`;
+
 function build(page) {
   const src = path.join(outDir, page);
   if (!fs.existsSync(src)) {
@@ -105,6 +109,7 @@ function build(page) {
   html = inlineImages(html);
   html = stripNextScripts(html);
   html = relativizeTopLevelAssets(html);
+  html = html.replace(/<\/body>/i, `${EXTERNAL_LINK_FALLBACK}</body>`);
 
   const dest = path.join(root, page);
   fs.writeFileSync(dest, html);
