@@ -11,8 +11,8 @@ export const zh: Dict = {
   },
   hero: {
     whoami: "whoami",
-    whoamiOut: "bayonetta · software engineer",
-    tagline: "iOS / macOS · 前端 · 工具链",
+    whoamiOut: "bayonetta · iOS native application development engineer",
+    tagline: "iOS / macOS · Objective-C / Swift / Flutter",
     scrollHint: "个人履历",
     lyuSite: "Lyu 系列官网",
     peaSite: "Pea 系列官网",

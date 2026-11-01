@@ -11,8 +11,8 @@ export const en: Dict = {
   },
   hero: {
     whoami: "whoami",
-    whoamiOut: "bayonetta · software engineer",
-    tagline: "iOS / macOS · Frontend · Tooling",
+    whoamiOut: "bayonetta · iOS native application development engineer",
+    tagline: "iOS / macOS · Objective-C / Swift / Flutter",
     scrollHint: "Resume",
     lyuSite: "Lyu Series",
     peaSite: "Pea Series",

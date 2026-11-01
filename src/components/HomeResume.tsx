@@ -77,9 +77,10 @@ function PublicationList() {
                 href={item.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm font-medium leading-snug transition-colors hover:text-accent"
+                className="group inline-flex items-baseline gap-1 text-sm font-medium leading-snug transition-colors hover:text-accent"
               >
                 {item.title}
+                <ArrowUpRight className="h-3.5 w-3.5 shrink-0 translate-y-0.5 text-faint transition-colors group-hover:text-accent" />
               </a>
             ) : (
               <p className="text-sm font-medium leading-snug">{item.title}</p>
@@ -96,14 +97,20 @@ function PublicationList() {
 }
 
 function InterestList() {
+  const { locale } = useLocale();
   if (interests.length === 0) return <Empty text="~/interests" />;
+  const l = locale as Locale;
   return (
     <div className="mt-6 flex flex-wrap gap-2">
-      {interests.map((it) => (
-        <span key={it} className="chip cursor-default">
-          {it}
-        </span>
-      ))}
+      {interests.map((item, i) => {
+        const label = item[l] ?? item.zh;
+        if (!label) return null;
+        return (
+          <span key={`${i}-${label}`} className="chip cursor-default">
+            {label}
+          </span>
+        );
+      })}
     </div>
   );
 }

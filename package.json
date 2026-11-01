@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node scripts/inject-srcdoc-compat.js",
+    "build": "next build && node scripts/inject-srcdoc-compat.js && node scripts/make-preview.js index.html",
+    "preview:html": "node scripts/make-preview.js index.html",
+    "preview:serve": "node scripts/serve-out.js 4173",
     "start": "next start",
     "lint": "eslint"
   },

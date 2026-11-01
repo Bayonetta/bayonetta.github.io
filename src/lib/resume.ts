@@ -72,6 +72,7 @@ export const publications: PublicationItem[] = [
     title: "Research on the Computational Complexity of Walls and Warriors Puzzle",
     venue: "The 17th Annual Meeting of Asian Association for Algorithms and Computation (AAAC 2026) · May 23–24, 2026 · Qingdao, China · International Conference Paper (Screening / Abstract-reviewed)",
     authors: "Shuai Zhao, Tonan Kamata, Ryuhei Uehara",
+    link: "https://math.ouc.edu.cn/aaac2026/",
   },
 ];
 
@@ -87,7 +88,22 @@ export const works: WorkItem[] = [
 export const series: WorkItem[] = [];
 
 // —— 兴趣爱好 ——
-export const interests: string[] = [
-  "类魂游戏",
-  "挑战困难的事情",
+// 每项三语（zh / en / ja），缺失语言回退到 zh。加一条只需补一个对象。
+export type InterestItem = Partial<Record<Locale, string>>;
+
+export const interests: InterestItem[] = [
+  { zh: "类魂游戏", en: "Soulslike games", ja: "ソウルライクゲーム" },
+  {
+    zh: "挑战困难的事情",
+    en: "Tackling hard problems",
+    ja: "難しいことへの挑戦",
+  },
+  {
+    zh: "算法与组合谜题",
+    en: "Algorithms & puzzles",
+    ja: "アルゴリズムと組み合わせパズル",
+  },
+  { zh: "终端与命令行", en: "Terminal & CLI", ja: "ターミナルと CLI" },
+  { zh: "开源软件", en: "Open source", ja: "オープンソース" },
+  { zh: "独立游戏", en: "Indie games", ja: "インディーゲーム" },
 ];

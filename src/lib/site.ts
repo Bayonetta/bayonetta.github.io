@@ -15,8 +15,8 @@ export const site = {
   profile: {
     name: "Bayonetta",
     avatar: "https://avatars.githubusercontent.com/u/3266065?s=200&v=4",
-    role: "Software Engineer",
-    tagline: "iOS / macOS · Frontend · Tooling",
+    role: "iOS Native Application Development Engineer",
+    tagline: "iOS / macOS · Objective-C / Swift / Flutter",
     location: {
       zh: "石川县金泽市",
       en: "Kanazawa, Ishikawa, Japan",
@@ -45,12 +45,13 @@ export const site = {
 // Pea 系列产品索引（/pea 页面展示）。例：{ name: "PeaScribe", desc: "字幕生成器", href: "/" }
 export const peaProducts: { name: string; desc: string; href: string }[] = [];
 
-// 首页底部导航圈。href 以 http 开头的走外部链接。
-// Lyu / Pea 系列已在首页「作品集」展示，不重复出现在导航圈里。
+// 首页左上角导航。href 以 http 开头的走外部链接。
+// Lyu / Pea 系列已在首页「作品集」展示，不重复出现在导航里。
+// hidden: true 的条目暂不渲染，想恢复把该字段改成 false 即可。
 export const homeLinks = [
-  { id: "github", label: "GitHub", href: site.github, external: true },
-  { id: "blog", label: "Blog", href: "/blog", external: false },
-  { id: "gallery", label: "Gallery", href: "/gallery", external: false },
+  { id: "github", label: "GitHub", href: site.github, external: true, hidden: false },
+  { id: "blog", label: "Blog", href: "/blog", external: false, hidden: true },
+  { id: "gallery", label: "Gallery", href: "/gallery", external: false, hidden: true },
 ] as const;
 
 export type HomeLinkId = (typeof homeLinks)[number]["id"];
