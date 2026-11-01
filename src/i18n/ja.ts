@@ -55,7 +55,12 @@ export const ja: Dict = {
   resume: {
     title: "~/resume",
     education: "学歴",
+    experience: "職務経歴",
+    present: "現在",
     publications: "研究発表",
+    pubKindInternational: "国際会議",
+    pubKindDomestic: "国内研究会",
+    nonReviewed: "査読なし",
     works: "作品",
     series: "シリーズ",
     interests: "趣味",

@@ -5,6 +5,7 @@ import { ArrowUpRight } from "lucide-react";
 import { useLocale } from "@/lib/locale";
 import {
   education,
+  experience,
   interests,
   publications,
   series,
@@ -61,37 +62,101 @@ function EducationList() {
   );
 }
 
+function ExperienceList() {
+  const { locale, t } = useLocale();
+  if (experience.length === 0) return <Empty text="~/experience" />;
+  const l = locale as Locale;
+  return (
+    <ol className="mt-6 space-y-7">
+      {experience.map((item, i) => {
+        const role = item.role?.[l] ?? item.role?.zh;
+        const summary = item.summary?.[l] ?? item.summary?.zh;
+        return (
+          <li
+            key={i}
+            className="grid gap-x-8 gap-y-1 sm:grid-cols-[160px_1fr] sm:items-baseline"
+          >
+            <p className="font-mono text-sm text-accent">
+              {item.period}
+              {item.ongoing ? ` — ${t.resume.present}` : ""}
+            </p>
+            <div className="min-w-0">
+              <p className="text-sm font-medium leading-snug">{item.company}</p>
+              {role && <p className="mt-0.5 text-xs text-muted">{role}</p>}
+              {summary && (
+                <p className="mt-2 text-xs leading-relaxed text-muted">
+                  {summary}
+                </p>
+              )}
+              {item.stack?.length ? (
+                <p className="mt-2 font-mono text-[11px] leading-relaxed text-faint">
+                  {item.stack.join(" · ")}
+                </p>
+              ) : null}
+            </div>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+// 学术发表：按国际通行格式排版 ——
+// 标题 / 作者 / 会议（简称 + 全称）/ 地点 · 会期 · 评审状态；左栏为年份与会议类型。
 function PublicationList() {
+  const { t } = useLocale();
   if (publications.length === 0) return <Empty text="~/publications" />;
   return (
-    <ul className="mt-6 space-y-6">
-      {publications.map((item, i) => (
-        <li
-          key={i}
-          className="grid gap-x-8 gap-y-1 sm:grid-cols-[160px_1fr] sm:items-baseline"
-        >
-          <p className="font-mono text-sm text-faint">{item.year}</p>
-          <div className="min-w-0">
-            {item.link ? (
-              <a
-                href={item.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex items-baseline gap-1 text-sm font-medium leading-snug transition-colors hover:text-accent"
-              >
-                {item.title}
-                <ArrowUpRight className="h-3.5 w-3.5 shrink-0 translate-y-0.5 text-faint transition-colors group-hover:text-accent" />
-              </a>
-            ) : (
-              <p className="text-sm font-medium leading-snug">{item.title}</p>
-            )}
-            <p className="mt-1 text-xs leading-relaxed text-muted">
-              {item.venue}
-              {item.authors ? ` · ${item.authors}` : ""}
-            </p>
-          </div>
-        </li>
-      ))}
+    <ul className="mt-6 space-y-8">
+      {publications.map((item, i) => {
+        const kind =
+          item.kind === "international"
+            ? t.resume.pubKindInternational
+            : t.resume.pubKindDomestic;
+        return (
+          <li
+            key={i}
+            className="grid gap-x-8 gap-y-1 sm:grid-cols-[160px_1fr] sm:items-baseline"
+          >
+            <div className="flex items-baseline gap-2 sm:block">
+              <p className="font-mono text-sm text-faint">{item.year}</p>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-faint sm:mt-1">
+                {kind}
+              </p>
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-medium leading-snug">
+                {item.link ? (
+                  <a
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-baseline gap-1 transition-colors hover:text-accent"
+                  >
+                    {item.title}
+                    <ArrowUpRight className="h-3.5 w-3.5 shrink-0 translate-y-0.5 text-faint transition-colors group-hover:text-accent" />
+                  </a>
+                ) : (
+                  item.title
+                )}
+              </p>
+              <p className="mt-1.5 text-xs leading-relaxed text-muted">
+                {item.authors}
+              </p>
+              <p className="mt-2 text-xs leading-relaxed">
+                <span className="font-medium text-fg">{item.venue}</span>
+                {item.venueFull && (
+                  <span className="text-muted"> · {item.venueFull}</span>
+                )}
+              </p>
+              <p className="mt-1 font-mono text-[11px] leading-relaxed text-faint">
+                {item.place} · {item.date}
+                {item.reviewed === false && ` · ${t.resume.nonReviewed}`}
+              </p>
+            </div>
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -162,6 +227,12 @@ export function HomeResume() {
       <section className="border-t border-line pt-8">
         <SectionTitle label={t.resume.education} />
         <EducationList />
+      </section>
+
+      {/* 工作经历：全行竖向 */}
+      <section className="border-t border-line pt-8">
+        <SectionTitle label={t.resume.experience} />
+        <ExperienceList />
       </section>
 
       {/* 学术发表：全行竖向 */}

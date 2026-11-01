@@ -54,7 +54,12 @@ export const zh: Dict = {
   resume: {
     title: "~/resume",
     education: "教育经历",
+    experience: "工作经历",
+    present: "至今",
     publications: "学术发表",
+    pubKindInternational: "国际会议",
+    pubKindDomestic: "国内研究会",
+    nonReviewed: "非同行评审",
     works: "作品",
     series: "系列",
     interests: "兴趣爱好",

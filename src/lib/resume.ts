@@ -10,13 +10,52 @@ export type EducationItem = {
   summary?: Partial<Record<Locale, string>>;
 };
 
+// 学术发表：按国际通行格式拆分字段（作者 / 标题 / 会议简称 / 会议全称 / 地点 / 日期）。
+// 会议名、地点、日期保留英文原文，符合计算机领域 CV 与 DBLP 的惯例；
+// 只有「会议类型」「评审状态」这类说明性文字跟随界面语言。
 export type PublicationItem = {
   year: string;
   title: string;
-  venue: string; // 期刊 / 会议
-  authors?: string;
+  authors: string;
+  venue: string; // 会议简称，如 "AAAC 2026"
+  venueFull?: string; // 会议全称
+  kind: "international" | "domestic";
+  place: string; // 举办地
+  date: string; // 会期
+  reviewed?: boolean; // 是否同行评审，缺省视为否
   link?: string;
 };
+
+// —— 学术发表 ——
+export const publications: PublicationItem[] = [
+  {
+    year: "2026",
+    title:
+      "Research on the Computational Complexity of Walls and Warriors Puzzle",
+    authors: "Shuai Zhao, Tonan Kamata, Ryuhei Uehara",
+    venue: "AAAC 2026",
+    venueFull:
+      "The 17th Annual Meeting of the Asian Association for Algorithms and Computation",
+    kind: "international",
+    place: "Qingdao, China",
+    date: "May 23–24, 2026",
+    reviewed: false,
+    link: "https://math.ouc.edu.cn/aaac2026/",
+  },
+  {
+    year: "2026",
+    title:
+      "Research on the Computational Complexity of Walls and Warriors Puzzle",
+    authors: "Shuai Zhao, Tonan Kamata, Ryuhei Uehara",
+    venue: "SIGAL 207",
+    venueFull: "The 207th IPSJ SIGAL Workshop on Algorithms",
+    kind: "domestic",
+    place: "Okayama, Japan",
+    date: "Mar 9, 2026",
+    reviewed: false,
+    link: "https://www.ipsj.or.jp/kenkyukai/event/al207.html",
+  },
+];
 
 export type WorkItem = {
   name: string;
@@ -24,6 +63,51 @@ export type WorkItem = {
   href: string;
   external?: boolean;
 };
+
+// 工作经历：公司名保留原文，职位与概述三语。
+export type ExperienceItem = {
+  period: string;
+  ongoing?: boolean; // true 时渲染为「2026.07 — 至今」
+  company: string;
+  role: Partial<Record<Locale, string>>;
+  summary?: Partial<Record<Locale, string>>;
+  stack?: string[];
+};
+
+// —— 工作经历 ——
+export const experience: ExperienceItem[] = [
+  {
+    period: "2014.07 — 2018.05",
+    company: "Beijing Weico Network Technology Co., Ltd.",
+    role: {
+      zh: "iOS 应用开发工程师",
+      en: "iOS Application Engineer",
+      ja: "iOS アプリケーション開発エンジニア",
+    },
+    summary: {
+      zh: "负责 Weibo 第三方 iOS 客户端 Weico 系列的时间线、发布、私信、推送、多账号与深色模式等核心功能；另交付 WeicoNote（Core Data 持久化）、SugarSelfie（AVFoundation / GPUImage 实时滤镜）与 iOS 分享 SDK。后期任 4 人小组 Leader，负责代码评审、技术支援与进度管理，并承担 App Store 发布与审核应对。2015 年 10 月公司更名转籍至 Beijing Weikuqi Information Technology Co., Ltd.。",
+      en: "Built core features — timeline, posting, direct messages, push, multi-account, dark mode — for the Weico iOS clients of Weibo, and delivered WeicoNote (Core Data persistence), SugarSelfie (AVFoundation / GPUImage real-time filters) and an iOS share SDK. Later led a 4-person team covering code review, technical support and scheduling, plus App Store release and review handling. Transferred to Beijing Weikuqi Information Technology Co., Ltd. on the company rename in Oct 2015.",
+      ja: "Weibo のサードパーティ製 iOS クライアント Weico シリーズにて、タイムライン・投稿・DM・プッシュ通知・複数アカウント・ダークモードなどの主要機能を開発。加えて WeicoNote（Core Data による永続化）、SugarSelfie（AVFoundation / GPUImage によるリアルタイムフィルタ）、iOS 向けシェア SDK を担当。後半は 4 名チームのリーダーとしてコードレビュー、技術支援、進捗管理、App Store リリース・審査対応を担った。2015 年 10 月の社名変更に伴い Beijing Weikuqi Information Technology Co., Ltd. へ転籍。",
+    },
+    stack: ["Objective-C", "Swift", "AVFoundation", "Core Image", "RxSwift"],
+  },
+  {
+    period: "2026.07",
+    ongoing: true,
+    company: "Pea Series · Microsoft Store",
+    role: {
+      zh: "独立开发 · 设计 / 实现 / 发布",
+      en: "Independent developer · design, implementation, release",
+      ja: "個人開発 · 設計・実装・公開",
+    },
+    summary: {
+      zh: "以 Flutter / Dart 独立设计与发布桌面端应用：PeaPlayer（字幕显示与逐句复读的语学学习播放器）与 PeaScribe（语音转写与字幕制作），Windows 版均已在 Microsoft Store 上架。",
+      en: "Designed and shipped two Flutter / Dart desktop apps solo: PeaPlayer (a language-learning media player with subtitles and sentence-level repeat) and PeaScribe (speech transcription and subtitle authoring), both published on the Microsoft Store for Windows.",
+      ja: "Flutter / Dart でデスクトップアプリを個人開発・公開。PeaPlayer（字幕表示と文単位リピートを備えた語学学習プレーヤー）と PeaScribe（音声書き起こし・字幕作成）を、いずれも Windows 版として Microsoft Store で公開済み。",
+    },
+    stack: ["Flutter", "Dart", "Microsoft Store"],
+  },
+];
 
 // —— 教育经历 ——
 export const education: EducationItem[] = [
@@ -66,15 +150,7 @@ export const education: EducationItem[] = [
 ];
 
 // —— 学术发表 ——
-export const publications: PublicationItem[] = [
-  {
-    year: "2026",
-    title: "Research on the Computational Complexity of Walls and Warriors Puzzle",
-    venue: "The 17th Annual Meeting of Asian Association for Algorithms and Computation (AAAC 2026) · May 23–24, 2026 · Qingdao, China · International Conference Paper (Screening / Abstract-reviewed)",
-    authors: "Shuai Zhao, Tonan Kamata, Ryuhei Uehara",
-    link: "https://math.ouc.edu.cn/aaac2026/",
-  },
-];
+// 定义见文件开头，此处仅保留数据。
 
 // —— 独立作品（非系列项目） ——
 export const works: WorkItem[] = [
@@ -98,12 +174,11 @@ export const interests: InterestItem[] = [
     en: "Tackling hard problems",
     ja: "難しいことへの挑戦",
   },
+  { zh: "算法", en: "Algorithms", ja: "アルゴリズム" },
   {
-    zh: "算法与组合谜题",
-    en: "Algorithms & puzzles",
-    ja: "アルゴリズムと組み合わせパズル",
+    zh: "组合谜题",
+    en: "Combinatorial puzzles",
+    ja: "組み合わせパズル",
   },
-  { zh: "终端与命令行", en: "Terminal & CLI", ja: "ターミナルと CLI" },
-  { zh: "开源软件", en: "Open source", ja: "オープンソース" },
   { zh: "独立游戏", en: "Indie games", ja: "インディーゲーム" },
 ];

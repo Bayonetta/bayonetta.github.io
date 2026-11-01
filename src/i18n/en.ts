@@ -55,7 +55,12 @@ export const en: Dict = {
   resume: {
     title: "~/resume",
     education: "Education",
+    experience: "Experience",
+    present: "Present",
     publications: "Publications",
+    pubKindInternational: "International conference",
+    pubKindDomestic: "Domestic workshop",
+    nonReviewed: "Non-peer-reviewed",
     works: "Works",
     series: "Series",
     interests: "Interests",
