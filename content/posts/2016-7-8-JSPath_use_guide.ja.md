@@ -4,7 +4,7 @@ title: "JSPatch学習ノート"
 description: "チュートリアル"
 comments: true
 category: "iOS"
-tags: [JSPatch, iOS, 开发]
+tags: [iOS, 开发]
 machineTranslated: true
 ---
 

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import { FileText, Github, Images } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LangToggle } from "@/components/LangToggle";
@@ -15,9 +15,20 @@ const icons: Record<HomeLinkId, typeof Github> = {
   gallery: Images,
 };
 
+// 所有导航按钮（含只显示提示的 Gallery）共用同一份样式，保证外观完全一致。
+const navButtonClass =
+  "inline-flex items-center gap-2 rounded-md border border-line bg-surface px-3.5 py-2 font-mono text-sm text-muted transition-colors hover:border-accent hover:bg-accent-soft hover:text-accent";
+
 export default function Home() {
   const { t } = useLocale();
   const year = new Date().getFullYear();
+  const [showComingSoon, setShowComingSoon] = useState(false);
+
+  useEffect(() => {
+    if (!showComingSoon) return;
+    const timer = window.setTimeout(() => setShowComingSoon(false), 2600);
+    return () => window.clearTimeout(timer);
+  }, [showComingSoon]);
 
   return (
     <main className="relative flex min-h-screen flex-col overflow-hidden">
@@ -34,23 +45,56 @@ export default function Home() {
 
       {/* 顶部控制：左侧主导航（GitHub / Blog / Gallery），右侧语言与主题 */}
       <div className="relative z-10 flex items-center justify-between gap-3 px-5 py-4">
-        <nav aria-label="主导航" className="flex flex-wrap items-center gap-2">
+        <nav aria-label="主导航" className="relative flex flex-wrap items-center gap-2">
           {homeLinks
             .filter((link) => !link.hidden)
             .map((link) => {
               const Icon = icons[link.id];
+              const domId = `home-nav-${link.id}`;
+              const inner = (
+                <>
+                  <Icon className="h-4 w-4" />
+                  <span className="uppercase tracking-wide">{link.label}</span>
+                </>
+              );
+              // comingSoon 项渲染为按钮：点击只在下方显示提示，不做任何跳转。
+              if (link.comingSoon) {
+                return (
+                  <span key={domId} className="relative inline-flex">
+                    <button
+                      type="button"
+                      onClick={() => setShowComingSoon(true)}
+                      aria-describedby={showComingSoon ? "home-coming-soon" : undefined}
+                      data-od-id={domId}
+                      className={navButtonClass}
+                    >
+                      {inner}
+                    </button>
+                    {showComingSoon && (
+                      <span
+                        id="home-coming-soon"
+                        role="status"
+                        className="absolute left-1/2 top-full z-20 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md border border-line bg-surface px-3 py-1.5 font-mono text-xs text-muted shadow-sm"
+                      >
+                        {t.gallery.comingSoon}
+                      </span>
+                    )}
+                  </span>
+                );
+              }
+              // 用原生 a 而非 next/link：客户端路由会把相对 href 重新解析成
+              // 站点根下的绝对路径，在预览面板 / file:// / 子目录部署时又会跳错。
               return (
-                <Link
-                  key={link.id}
+                <a
+                  key={domId}
                   href={link.href}
                   target={link.external ? "_blank" : undefined}
                   rel={link.external ? "noopener noreferrer" : undefined}
-                  data-od-id={`home-nav-${link.id}`}
-                  className="inline-flex items-center gap-2 rounded-md border border-line bg-surface px-3.5 py-2 font-mono text-sm text-muted transition-colors hover:border-accent hover:bg-accent-soft hover:text-accent"
+                  data-od-id={domId}
+                  className={navButtonClass}
                 >
-                  <Icon className="h-4 w-4" />
-                  <span className="uppercase tracking-wide">{link.label}</span>
-                </Link>
+                  {inner}
+                </a>
               );
             })}
         </nav>
@@ -83,9 +127,8 @@ export default function Home() {
       </div>
 
       {/* 页脚 */}
-      <footer className="relative z-10 mt-16 flex items-center justify-between border-t border-line px-6 py-4 text-xs text-faint">
-        <span>© {year} bayonetta</span>
-        <span className="font-mono hidden sm:block">zsh · ∞</span>
+      <footer className="relative z-10 mt-16 flex items-center justify-center border-t border-line px-6 py-4 text-center text-xs text-faint">
+        <span>© {year} Bayonetta. All rights reserved.</span>
       </footer>
     </main>
   );

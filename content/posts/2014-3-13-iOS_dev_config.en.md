@@ -4,7 +4,7 @@ title: "Building an elegant iOS development environment"
 description: "Tutorial"
 category: "iOS"
 comments: true
-tags: ['iOS','Xcode','IDE']
+tags: ['iOS','Xcode','Development']
 machineTranslated: true
 ---
 

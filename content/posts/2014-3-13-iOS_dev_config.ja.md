@@ -4,7 +4,7 @@ title: "上質なiOS開発環境を構築する"
 description: "チュートリアル"
 category: "iOS"
 comments: true
-tags: ['iOS','Xcode','IDE']
+tags: ['iOS','Xcode','開発']
 machineTranslated: true
 ---
 

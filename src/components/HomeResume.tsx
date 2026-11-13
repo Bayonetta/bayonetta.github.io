@@ -89,7 +89,8 @@ function ExperienceList() {
 // 学术发表：按国际通行格式排版 ——
 // 标题 / 作者 / 会议（简称 + 全称）/ 地点 · 会期 · 评审状态；左栏为年份与会议类型。
 function PublicationList() {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
+  const l = locale as Locale;
   if (publications.length === 0) return <Empty text="~/publications" />;
   return (
     <ul className="mt-6 space-y-8">
@@ -98,6 +99,9 @@ function PublicationList() {
           item.kind === "international"
             ? t.resume.pubKindInternational
             : t.resume.pubKindDomestic;
+        // 会议全称 / 地点按界面语言取值，英文原文兜底；作者署名始终保留英文
+        const venueFull = item.venueFull?.[l] ?? item.venueFull?.en;
+        const place = item.place?.[l] ?? item.place?.en ?? "";
         return (
           <li
             key={i}
@@ -130,12 +134,12 @@ function PublicationList() {
               </p>
               <p className="mt-2 text-xs leading-relaxed">
                 <span className="font-medium text-fg">{item.venue}</span>
-                {item.venueFull && (
-                  <span className="text-muted"> · {item.venueFull}</span>
+                {venueFull && (
+                  <span className="text-muted"> · {venueFull}</span>
                 )}
               </p>
               <p className="mt-1 font-mono text-[11px] leading-relaxed text-faint">
-                {item.place}
+                {place}
                 {item.reviewed === false && ` · ${t.resume.nonReviewed}`}
               </p>
             </div>

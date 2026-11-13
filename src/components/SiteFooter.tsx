@@ -1,12 +1,13 @@
 "use client";
 
-import Link from "next/link";
 import { Github } from "lucide-react";
 import { useLocale } from "@/lib/locale";
+import { useSitePrefix } from "@/lib/links";
 import { site } from "@/lib/site";
 
 export function SiteFooter() {
   const { t } = useLocale();
+  const prefix = useSitePrefix();
   const year = new Date().getFullYear();
 
   return (
@@ -31,9 +32,9 @@ export function SiteFooter() {
         </div>
         <span className="font-mono">
           {t.footer.builtWith}{" "}
-          <Link href="/" className="transition-colors hover:text-accent">
+          <a href={prefix} className="transition-colors hover:text-accent">
             Next.js
-          </Link>
+          </a>
         </span>
       </div>
     </footer>

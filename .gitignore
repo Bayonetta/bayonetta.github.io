@@ -66,3 +66,5 @@ next-env.d.ts
 /window.svg
 /blog/
 /images/
+# make-preview.js --posts 生成的单文件文章副本（默认不生成，避免 28MB 进仓库）
+/post-*.html

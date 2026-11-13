@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { getAllPosts } from "@/lib/api";
 import { PageHeader } from "@/components/PageHeader";
-import { ProfileCard } from "@/components/ProfileCard";
 import { BlogBrowser } from "@/components/BlogBrowser";
 
 export const metadata: Metadata = {
@@ -15,7 +14,6 @@ export default function BlogPage() {
   return (
     <div className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6">
       <PageHeader section="blog" />
-      <ProfileCard />
       <div className="mt-8">
         <BlogBrowser posts={posts} />
       </div>

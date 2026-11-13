@@ -43,7 +43,6 @@ export default async function PostPage({
       lang,
       title: post.title,
       date: post.date,
-      description: post.description,
       tags: post.tags,
       updated: post.updated,
       readingTime: post.readingTime,

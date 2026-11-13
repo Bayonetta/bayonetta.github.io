@@ -1,13 +1,13 @@
 ---
 layout: post
 title: "JSPatch学习笔记"
-description: "Tutorial"
+description: "JSPatch 的原理、defineClass 的实现细节与踩过的坑。"
 comments: true
 category: "iOS"
-tags: [JSPatch, iOS, 开发]
+tags: [iOS, 开发]
 ---
 
-
+补一句前提：JSPatch 这类热修复方案在 2017 年之后被 App Store 审核条款禁止，项目本身也已停止维护。这篇笔记留在这里只作为 OC 运行时和 JSContext 桥接的学习材料，不要照着往线上接。
 
 ## 依赖
 
@@ -17,18 +17,17 @@ tags: [JSPatch, iOS, 开发]
 
 ## 原理
 
-利用OC运行时特性，动态对指定类的方法进行增添或替换，以及注册新类等。
+利用 OC 运行时特性，动态对指定类的方法进行增添或替换，以及注册新类等。
 
 * 消息传递
 
-通过JSContext以Block形式进行方法定义，然后在OC下执行，将返回值传给JS。参数类型都会通过JavascriptCore进行自动转换。
-
+通过 JSContext 以 Block 形式进行方法定义，然后在 OC 下执行，将返回值传给 JS。参数类型都会通过 JavascriptCore 自动转换。
 
 ## 关键词
 
 * **require**
 
-	在JS全局作用域上创建一个同名变量，变量指向一个对象，对象属性 __clsName 保存类名，同时表明这个对象是一个 OC Class。
+	在 JS 全局作用域上创建一个同名变量，变量指向一个对象，对象属性 `__clsName` 保存类名，同时表明这个对象是一个 OC Class。
 
 ```js
 
@@ -45,7 +44,7 @@ var _require = function(clsName) {
 
 * **defineClass**
 
-	通过在`JPEngine`中向脚本全局注入`_OC_defineClass`方法，然后在JSPatch.js中调用`defineClass`方法，实质即调用OC的`_OC_defineClass`方法。
+	通过在 `JPEngine` 中向脚本全局注入 `_OC_defineClass` 方法，然后在 JSPatch.js 中调用 `defineClass` 方法，实质即调用 OC 的 `_OC_defineClass` 方法。
 
 ```objc
 
@@ -54,11 +53,13 @@ context[@"_OC_defineClass"] = ^(NSString *classDeclaration, JSValue *instanceMet
     };
 
 ```
-	然后在js中的defineClass实现如下。
-	参数列表：
+
+	然后在 js 中的 defineClass 实现如下。参数列表：
+
 	1. 类名字符串
-	2. 属性列表，已经被转换为JS的数据类型
+	2. 属性列表，已经被转换为 JS 的数据类型
 	3. 类的实例方法和类方法列表
+
 ```js
 
 global.defineClass = function(declaration, properties, instMethods, clsMethods) {
@@ -109,10 +110,11 @@ global.defineClass = function(declaration, properties, instMethods, clsMethods) 
   }
 
 ```
+
 * **_formatDefineMethods**
 
+	规范化 JS 方法：
 
-	规范化JS方法
 ```js
  var _formatDefineMethods = function(methods, newMethods, realClsName) {
     for (var methodName in methods) {
@@ -137,23 +139,29 @@ global.defineClass = function(declaration, properties, instMethods, clsMethods) 
     }
   }
 
-将传进来的JS对象进行修改
-
-原来的形式是：
-    {
-        handleBtn：function（）｛...｝
-    ｝
-修改之后是：
-    {
-        handleBtn: [argCount,function (){...新的实现}]
-    }
 ```
-	因为无法直接解析原始的js实现函数，那么就不知道参数的个数，特别是在创建新的方法的时候，需要根据参数个数生成方法签名，所以只能在js端拿到js函数的参数个数，传递到OC端
 
+这一步是把传进来的 JS 对象改形。原来是：
+
+```js
+{
+  handleBtn: function() { ... }
+}
+```
+
+改完之后是：
+
+```js
+{
+  handleBtn: [argCount, function() { ...新的实现 }]
+}
+```
+
+为什么要这么绕：OC 侧没法直接解析原始的 JS 函数，也就不知道参数个数。而创建新方法时必须按参数个数生成方法签名（selector 里的冒号数量对不上就找不到方法），所以只能先在 JS 端拿到 `Function.length`，再连同函数一起传到 OC。
 
 * **_c()函数**
 
-	实际并不存在，为自定义，用来将不存在的方法转发到特定函数中。
+	实际并不存在，是自定义的，用来把不存在的方法转发到特定函数中。
 
 ```js
 
@@ -183,28 +191,28 @@ NSString *script = [NSString stringWithContentsOfFile:sourcePath encoding:NSUTF8
 [JPEngine evaluateScript:script];
 
 ```
+
 ## 坑
 
-* 所有基本数据类型无需转换成NSNumber/NSValue, 会自动转换
+* 所有基本数据类型无需转换成 NSNumber / NSValue，会自动转换
 
 * CGRect 要按照规定格式书写，例如 `CGRectMake(1, 2, 4.2, 1)` 或 `CGRectMake(x, y, width, height)`
 
 * 类别方法无法调用
 
-* weakSelf无法使用typedef, 直接定义新变量即可
+* weakSelf 无法使用 typedef，直接定义新变量即可
 
-* 不要使用GCD
+* 不要使用 GCD
 
-* 不支持枚举变量，使用Int
+* 不支持枚举变量，用 Int
 
-* 方法内不要出现_，因为方法会被转化成xxx_xxx_xxx
+* 方法内不要出现下划线，因为方法名会被转换成 `xxx_xxx_xxx` 的形式
 
-* NSLog无效，使用MBProgressHUD弹出信息进行调试
+* NSLog 无效，调试时用 MBProgressHUD 弹提示代替
 
 ```js
 var weakSelf = self;
-``` 
-
+```
 
 ## 扩展
 
@@ -214,15 +222,15 @@ var weakSelf = self;
 
 ## 安全性
 
-* 完整文件检验值，服务端与本地加密结果对比
+* 完整文件校验值，服务端与本地加密结果对比
 
-* 使用URL，非JS明文传递，并且使用https,避免中间人攻击
+* 使用 URL 而非 JS 明文传递，并且走 https，避免中间人攻击
 
-* 防止本地沙盒文件篡改
+* 防止本地沙盒文件被篡改
 
 * JSLoader
 
-	官方提供的下发Class
+	官方提供的下发 Class
 
 ## Convertor
 
@@ -230,13 +238,13 @@ var weakSelf = self;
 
 * [试用页面](http://bang590.github.io/JSPatchConvertor/)
 
-	* 不支持的内容：
-		1. Macro / constant variable / Enum
-		2. C function calling
-		3. GCD functions
-		4. Pointer / Struct
-		5. Getting / Setting private variable
+	不支持的内容：
 
+	1. Macro / constant variable / Enum
+	2. C function calling
+	3. GCD functions
+	4. Pointer / Struct
+	5. Getting / Setting private variable
 
 ## Plugin
 

@@ -18,10 +18,6 @@ tags: []
 
 今后要努力的当一名优质的内容提供者！
 
-PS: 博客的名字来自于我最爱的同名歌曲，由林夕谱词，杨千嬅演唱。【丁目】为日本的街道名。
-
-附相关教程若干：
-
  * [像黑客一样写博客——Jekyll入门](http://www.soimort.org/posts/101/)
  * [搭建一个免费的，无限流量的Blog----github Pages和Jekyll入门](http://www.ruanyifeng.com/blog/2012/08/blogging_with_jekyll.html)
  * [为博客添加 DisQus 评论](http://pizn.github.io/2011/11/15/use-disqus-for-your-post.html)

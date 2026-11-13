@@ -12,19 +12,22 @@ export type EducationItem = {
 };
 
 // 学术发表：按国际通行格式拆分字段（作者 / 标题 / 会议简称 / 会议全称 / 地点 / 日期）。
-// 会议名、地点、日期保留英文原文，符合计算机领域 CV 与 DBLP 的惯例；
-// 只有「会议类型」「评审状态」这类说明性文字跟随界面语言。
+// 论文标题、作者署名、会议简称一律保留英文罗马字原文（符合 CV / DBLP 惯例，便于检索与署名核对）；
+// 会议全称与举办地提供 zh / en / ja 三语，按界面语言取值，缺失回退 en。
 export type PublicationItem = {
   date: string; // 左栏索引，年+月，例 "2026.05"
-  title: string;
-  authors: string;
-  venue: string; // 会议简称，如 "AAAC 2026"
-  venueFull?: string; // 会议全称
+  title: string; // 论文标题，保留英文原文
+  authors: string; // 作者署名，保留英文罗马字
+  venue: string; // 会议简称，如 "AAAC 2026"，保留拉丁字母
+  venueFull?: Partial<Record<Locale, string>>;
   kind: "international" | "domestic";
-  place: string; // 举办地
+  place: Partial<Record<Locale, string>>;
   reviewed?: boolean; // 是否同行评审，缺省视为否
   link?: string;
 };
+
+// 两条记录共用同一份英文署名，避免各自维护造成不一致。
+const publicationAuthors = "Shuai Zhao, Tonan Kamata, Ryuhei Uehara";
 
 // —— 学术发表 ——
 // 按时间从早到晚排列（与教育、工作经历一致）。
@@ -33,11 +36,19 @@ export const publications: PublicationItem[] = [
     date: "2026.03",
     title:
       "Research on the Computational Complexity of Walls and Warriors Puzzle",
-    authors: "Shuai Zhao, Tonan Kamata, Ryuhei Uehara",
+    authors: publicationAuthors,
     venue: "SIGAL 207",
-    venueFull: "The 207th IPSJ SIGAL Workshop on Algorithms",
+    venueFull: {
+      zh: "信息处理学会第 207 回算法研究会",
+      en: "The 207th IPSJ SIGAL Workshop on Algorithms",
+      ja: "情報処理学会 第207回アルゴリズム研究会",
+    },
     kind: "domestic",
-    place: "Okayama, Japan",
+    place: {
+      zh: "日本·冈山",
+      en: "Okayama, Japan",
+      ja: "日本・岡山",
+    },
     reviewed: false,
     link: "https://www.ipsj.or.jp/kenkyukai/event/al207.html",
   },
@@ -45,12 +56,19 @@ export const publications: PublicationItem[] = [
     date: "2026.05",
     title:
       "Research on the Computational Complexity of Walls and Warriors Puzzle",
-    authors: "Shuai Zhao, Tonan Kamata, Ryuhei Uehara",
+    authors: publicationAuthors,
     venue: "AAAC 2026",
-    venueFull:
-      "The 17th Annual Meeting of the Asian Association for Algorithms and Computation",
+    venueFull: {
+      zh: "第 17 届亚洲算法与计算协会年会",
+      en: "The 17th Annual Meeting of the Asian Association for Algorithms and Computation",
+      ja: "アジアアルゴリズム・計算学会 第17回年次大会",
+    },
     kind: "international",
-    place: "Qingdao, China",
+    place: {
+      zh: "中国·青岛",
+      en: "Qingdao, China",
+      ja: "中国・青島",
+    },
     reviewed: false,
     link: "https://math.ouc.edu.cn/aaac2026/",
   },
@@ -70,11 +88,12 @@ export type ExperienceItem = {
 };
 
 // —— 工作经历 ——
+// 统一格式：动作 + 公司名。中文用工商登记中文名，英/日沿用英文登记名。
 export const experience: ExperienceItem[] = [
   {
     period: "2014.07",
     text: {
-      zh: "入职 Beijing Weico Network Technology Co., Ltd.",
+      zh: "入职 微酷奥（北京）科技有限公司",
       en: "Joined Beijing Weico Network Technology Co., Ltd.",
       ja: "Beijing Weico Network Technology Co., Ltd. に入社",
     },
@@ -82,17 +101,17 @@ export const experience: ExperienceItem[] = [
   {
     period: "2015.10",
     text: {
-      zh: "公司更名为 Beijing Weikuqi Information Technology Co., Ltd.（微博子公司），随转籍",
-      en: "Renamed to Beijing Weikuqi Information Technology Co., Ltd., a Weibo subsidiary; transferred accordingly",
-      ja: "社名変更に伴い Beijing Weikuqi Information Technology Co., Ltd.（Weibo 子会社）へ転籍",
+      zh: "更名 北京维酷奇信息有限公司",
+      en: "Renamed to Beijing Weikuqi Information Technology Co., Ltd.",
+      ja: "Beijing Weikuqi Information Technology Co., Ltd. へ社名変更",
     },
   },
   {
     period: "2018.05",
     text: {
-      zh: "离职",
-      en: "Left the company",
-      ja: "退社",
+      zh: "离职 北京维酷奇信息有限公司",
+      en: "Left Beijing Weikuqi Information Technology Co., Ltd.",
+      ja: "Beijing Weikuqi Information Technology Co., Ltd. を退社",
     },
   },
 ];
@@ -189,4 +208,6 @@ export const interests: InterestItem[] = [
     ja: "組み合わせパズル",
   },
   { zh: "独立游戏", en: "Indie games", ja: "インディーゲーム" },
+  { zh: "动作游戏", en: "Action games", ja: "アクションゲーム" },
+  { zh: "RPG", en: "RPG", ja: "RPG" },
 ];

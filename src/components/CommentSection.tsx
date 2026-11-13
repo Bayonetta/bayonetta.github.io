@@ -49,16 +49,11 @@ export function CommentSection() {
     };
   }, [repo, repoId, categoryId, resolvedTheme, locale]);
 
-  if (!repo || !repoId || !categoryId) {
-    return (
-      <div className="card mt-12 flex items-center justify-center px-6 py-10">
-        <p className="font-mono text-xs text-faint">
-          {/* 评论功能待配置：在 src/lib/site.ts 填入 Giscus 参数 */}
-          giscus: pending config
-        </p>
-      </div>
-    );
-  }
+  // 未配置 Giscus 时整节不渲染。以前这里会显示「giscus: pending config」
+  // 占位框，在发给招聘方的页面上像一处没做完的功能，反而减分。
+  // 想启用评论：按 src/lib/site.ts 里的说明填好 4 个参数，本组件会自动生效，
+  // 不需要改动这里或文章 frontmatter。
+  if (!repo || !repoId || !categoryId) return null;
 
   return (
     <section data-od-id="comments" className="mt-12 border-t border-line pt-8">

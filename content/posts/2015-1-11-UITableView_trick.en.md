@@ -4,7 +4,7 @@ title: "A trick for stopping UITableView HeaderView from sticking"
 description: "Tutorial"
 category: "iOS"
 comments: true
-tags: [iOS, 开发，优化]
+tags: [iOS, Development, UITableView]
 machineTranslated: true
 ---
 

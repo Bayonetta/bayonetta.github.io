@@ -31,7 +31,7 @@ Apple Developerのoverviewにある、NSFileManagerのインスタンス化に�
 
 > In iOS and Mac OS X v 10.5 and later you should consider using [[NSFileManager alloc] init] rather than the singleton method defaultManager. Instances of NSFileManager are considered thread-safe when created using [[NSFileManager alloc] init].
 
-したがって、`[NSFileManager defaultManager]`で得られる共有シングルトンはスレッドセーフではありません。公式が推奨する方法は`[[NSFileManager alloc] init]`でインスタンス化することです。
+訂正：この2つの引用を並べると「`defaultManager` はスレッドセーフではない」と読んでしまいがちですが、それは誤りです。`defaultManager` のメソッド自体は**スレッドセーフ**です。独立したインスタンスが必要なのは、操作通知を受け取る delegate を割り当てる場合だけです。`delegate` はインスタンス単位のプロパティなので、共有シングルトンに付けると他の呼び出し元に上書きされてしまいます。
 
 ```objc
 NSFileManager *fileManager = [[NSFileManager alloc] init];

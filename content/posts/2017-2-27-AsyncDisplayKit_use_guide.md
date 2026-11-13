@@ -1,98 +1,89 @@
 ---
 layout: post
 title: "AsyncDisplayKit学习笔记"
-description: "Tutorial"
+description: "AsyncDisplayKit 的 node 生命周期、布局引擎与踩坑记录。"
 category: "iOS"
 comments: true
 tags: [AsyncDisplayKit, Facebook, iOS, 开发]
 ---
 
+补充一句背景：AsyncDisplayKit 在 2018 年改名为 Texture，下面的 API 名称都是 2017 年的写法。核心概念没变，但具体接口以现在的文档为准。
 
+## 介绍
 
-# 介绍
+AsyncDisplayKit 的核心概念是 node。`ASDisplayNode` 是基于 UIView 或 CALayer 的抽象，看头文件也能大致看出来，它把 view 与 layer 相关属性整合到了一起。
 
-AsyncDisplayKit的核心概念就是node。`ASDisplayNode	`是一个基于UIView或CALayer的抽象概念，通过看对应的头文件也能基本看出来，它把View与layer相关属性都整合到一起了。
+- `layerBacked` 可以设置成直接用 layer 构成 node，默认是一个 `_ASDisplayView` 的内部类对应 node。
+- 拥有自己的 layout 引擎，思路类似 CSS，不支持 Auto Layout。
 
-* `layerBacked`可以设置成直接用layer构成node，默认是一个_ASDisplayView的一个内部类对应Node
+### ASDisplayNode
 
-* 拥有自己的layout引擎，类似CSS，不支持Auto Layout
+**init**
 
+- 任何线程调用。
+- touch 事件或手势绑定不要在这里做，放到 `didLoad` 里。
 
-#### ASDisplayNode
+**didLoad**
 
-* init
+- 主线程调用。
+- 可以做任何 UI 相关操作和初始化。
 
-	* 任何线程调用
-	* touch事件或者手势绑定不要在这里执行，放到didLoad里面
+**layoutSpecThatFits**
 
-* didLoad
-	
-	* 主线程调用
-	* 可以进行任何UI相关操作和初始化
-	
-* layoutSpecThatFits
+- 任何线程调用。
+- 计算布局的主要方法。
+- 不可进行任何 UI 相关操作，不能创建其他 node，也不需要调用 super。
+- 官方建议不要缓存 layout，尽量每次都重算。
 
-	* 任何线程调用 
-	* 计算布局的主要方法
-	* 不可进行任何UI相关操作和其他Node的创建，也不需要进行Super调用
-	* 另外官方建议不要Cache layout，尽量每次都重算。
-	
-	
-* layout
+**layout**
 
-	* 主线程调用
-	* 比较类似viewWillLayoutSubviews，需要调用super方法，以致进行自身和subnodes的布局运算
-	* 适合进行hidden或者背景色等UI基本信息设置，但不包含布局设置
-	* 如果要设置UIView相关对象，可以在layout中设置frame，尽量使用initWithViewBlock方法，放到后台进程
-	* 官方举了个使用例子，colletionNode设置全屏适合在layout方法中调用
-	
-			subnode.frame = self.bounds;
+- 主线程调用。
+- 类似 `viewWillLayoutSubviews`，需要调 super，才会进行自身和 subnode 的布局运算。
+- 适合设置 hidden、背景色这类 UI 基本信息，但不包含布局设置。
+- 如果要操作 UIView 对象，可以在 layout 里设 frame；尽量用 `initWithViewBlock` 方法，把它放到后台线程。
+- 官方举过一个例子：collectionNode 设成全屏，适合在 layout 方法里调用。
 
+```objc
+subnode.frame = self.bounds;
+```
 
-	
-#### ASViewController
+### ASViewController
 
-UIViewController的子类，都是主线程操作
+UIViewController 的子类，都是主线程操作。
 
-* init
+**init**
 
-	* 不要访问self.view或者self.node.view，这样会强迫视图被过早初始化，以免引发问题。
-	* 自带`initWithNode`方法初始化，其自身管理node的方法和view类似
-	
-* loadView
+- 不要访问 `self.view` 或 `self.node.view`，那会强迫视图过早初始化，容易引出问题。
+- 自带 `initWithNode` 方法初始化，它管理 node 的方式和 view 类似。
 
-    * 官方建议不使用此方法，因为实在没用。
-    * 在这里不要自行改变self.view的对应视图对象，因为调用super方法会设置到node.view上
-   
+**loadView**
 
-* viewDidLoad
+- 官方建议不要用这个方法，因为确实没什么用。
+- 在这里不要自行改变 `self.view` 对应的视图对象，因为调 super 会把它设到 `node.view` 上。
 
- 	* 不要写任何布局逻辑
+**viewDidLoad**
 
-* viewWillLayoutSubviews
+- 不要写任何布局逻辑。
 
-	* 与node的layout方法一起调用
-	* 会在node的bounds行为（包括旋转、分屏、键盘弹出）改变时调用，也包括子node被改变时
-	* 官方建议把布局逻辑写在这里（不强依赖于size的代码）
-	
-* viewWillAppear / viewDidDisappear
+**viewWillLayoutSubviews**
 
-	* 适合统计用户行为log
-	* 适合进行Controller的动画操作
-	
-	
-	
-# 用法
+- 与 node 的 layout 方法一起调用。
+- 会在 node 的 bounds 发生变化时调用（旋转、分屏、键盘弹出都算），子 node 变化时也会。
+- 官方建议把布局逻辑写在这里，指那些不强依赖 size 的代码。
 
-* Layout Specs 
+**viewWillAppear / viewDidDisappear**
 
-* Layout Element Properties
+- 适合统计用户行为 log。
+- 适合做 Controller 的动画操作。
 
-	* ASStackLayoutElement Properties
-	* ASAbsoluteLayoutElement Properties
-	* ASLayoutElement Properties
-	
-* 支持多种赋值
+## 用法
+
+- Layout Specs
+- Layout Element Properties
+  - ASStackLayoutElement Properties
+  - ASAbsoluteLayoutElement Properties
+  - ASLayoutElement Properties
+- 尺寸支持多种赋值方式：
 
 ```objc
 
@@ -107,71 +98,48 @@ ASDimensionMakeWithPoints(70);
 
 ```
 
-* Batch Fetching API 
-
-	官方提供方法用做预加载，实现无限滚动功能
+- Batch Fetching API：官方提供的方法，用来做预加载，实现无限滚动。
 
 ```objc
 -tableNode:willBeginBatchFetchWithContext:
 -collectionNode:willBeginBatchFetchWithContext:
 ```
 
-* `ASDisplayNode`是一切Node的始祖类。
+- `ASDisplayNode` 是一切 node 的始祖类。
+- 更新布局记得调 `setNeedsLayout`。
+- `automaticallyManagesSubnodes` 可以自动管理子 node，不用再手动 `addSubnode`。
+- `inverted` 可以翻转 tableNode、collectionNode 的 NSIndexPath，最下方的 cellNode 变成 `NSIndexPath(0, 0)`，做聊天类 App 会方便很多。
+- `imageModificationBlock` 是 imageNode 的 block，可以做后期处理，比如圆角裁剪。
+- `shouldRasterizeDescendants` 做子树光栅化，类似 VVebo 的效果：一个点内的所有 node 层级都会绘制到一个 layer 上。
+- `neverShowPlaceholders` 会同步绘制 cellNode，主线程会锁住，直到界面绘制完成。
+- 自定义 `ASViewController` 或 `ASDisplayNode` 的子类时要细心，两者区别很微妙。
+- ASImageNode、ASButtonNode、ASTextNode 同为 ASControlNode 的子类，可以直接用 `addTarget(self, action: "handleXXX", forControlEvents: .TouchUpInside)` 加点击响应，避免走 `addGesture`。
+- ASImageNode 是 UIImageView 的极佳替代品：它在后台线程把 UIImage 渲染好，再回主线程呈现，FPS 提升很明显。
+  - 本地图像可以直接把 UIImage 实例赋给 `ASImageNode.image`。
+  - 网络图像应该用 ASNetworkImageNode，并给它指定一个 ImageManager 管理网络请求与图像缓存。
+- `hitTestSlop` 属性可以扩大点击响应区域。
+- `enableHitTestDebug`：ADK 提供不少 debug 功能，这个是测响应区域的，可响应区域会变成绿色。
 
-* 更新布局，记得调用setNeedsLayout
+## FAQ
 
-* `automaticallyManagesSubnodes`方法可以自动管理子node，不用再手动addSubNode
+**常见错误**
 
+- 禁止在 `-init:` 方法里访问 `node.view`。
+- 确保在 node block 外部访问 data source。
+- viewBlock 注意避免循环引用。
 
-* `inverted`可以翻转整个tableNode、CollectionNode的NSIndexPath，最下方的cellNode变成NSIndexPath(0, 0), 比如聊天类的app会方便很多
+**常见概念误区**
 
-* `imageModificationBlock`是ImageNode的block，可以做一个后期处理，比如圆角裁剪等
+- 「ASCellNode 不会复用」——会复用。它不走 reuse identifier 那套，但 cell 实例确实会被回收重排。
+- LayoutSpec 不是只在初始化时算一次，每次 layout 被调用都会执行。
+- AsyncDisplayKit 有自己的布局 API，用法和系统 API 差别很大，别按 Auto Layout 的思路硬套。
 
-* `shouldRasterizeDescendants` 子树光栅化，意味着类似VVebo的效果，一个点内的所有node层级都会绘制到一个layer上
+**常见性能问题场景**
 
-* `neverShowPlaceholders`同步绘制cellNode，主线程会锁死，知道界面完成绘制
+- 避免使用 `cornerRadius` 属性，同理还有 `shadowPath`、`border`、`mask`。
+- ASDK 不支持 Auto Layout。
+- ASDisplayNode 的指针会保持 alive。据说系统里当 layer 被添加到 UIView 的 super layer 之后也会一直保留，即使 layer 的 delegate 是 weak。
 
-* 自定义`ASViewController`或者`ASDisplayNode`的子类时要细心，因为它们的区别很微妙。
+**Corner Rounding**
 
-* ASImageNode、ASButtonNode、ASTextNode 同为 ASControlNode 子类，可以直接使用 `addTarget(self, action: "handleXXX", forControlEvents: .TouchUpInside)` 为它们添加点击响应事件，而避免使用addGesture等方法。
-
-* ASImageNode 是 UIImageView 的极佳替代品，ASImageNode 会在后台线程渲染好 UIImage ，然后再在主线程中呈现图像。 因此，ASImageNode可以极大地提升FPS数值。
-	
-			如果是本地图像，你可以直接将一个 UIImage 实例赋值到 ASImageNode.image 中。
-			
-			如果是网络图像，你应该使用 ASNetworkImageNode， 同时你需要为 ASNetworkImageNode 指定一个 ImageManager 用于管理网络请求、图像缓存等操作。
-	
-	
-* hitTestSlop属性可以扩大点击响应区域
-
-* enableHitTestDebug 
-
-	ADK提供很多debug功能，这个是测试相应区域的，可响应区域会变成绿色
-
-
-# FAQ	
-
-* 常见错误
-
-	* 禁止在`-init:`方法访问node.view
-	* 确保在node block外部访问data source
-	* viewBlocks避免循环引用
-	
-* 常见概念误区
-
-	* ASCellNode不会复用
-	* LayoutSpecs会在每次layout被调用时执行
-	* AsyncDisplayKit有自己的强大布局API，用法上和系统的API又很大区别
-	
-	
-* 常见性能问题场景
-	* 避免使用`cornerRadius`属性（以及`shadowPath`，`border`, `mask`）
-	* ASDK不支持Auto Layout
-	* ASDisplayNode的指针会保持alive（据说系统中当layer被添加到UIView的super layer上后，也会一直保留，即使layer的delegate被置为weak）
-
-
-* Corner Rounding
-
-	官网有一篇圆角的分析和优化文章，具体可以看文档
-
-
+官网有一篇圆角的分析和优化文章，具体看文档。

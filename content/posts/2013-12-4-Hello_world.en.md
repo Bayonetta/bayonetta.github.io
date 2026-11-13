@@ -18,8 +18,6 @@ These past few days I have been getting familiar with Jekyll, and it does not fe
 
 From now on I have to work hard to be a quality content provider!
 
-PS: The name of the blog comes from my favourite song of the same name, with lyrics by Lin Xi and sung by Miriam Yeung. 【丁目】 is a Japanese street name.
-
 A few related tutorials:
 
 * [Writing a blog like a hacker — a Jekyll primer](http://www.soimort.org/posts/101/)

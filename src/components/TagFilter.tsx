@@ -1,5 +1,8 @@
 "use client";
 
+import type { Locale } from "@/i18n/types";
+import { localizeTag } from "@/lib/tag-labels";
+
 type TagItem = { name: string; count: number };
 
 type TagFilterProps = {
@@ -7,9 +10,10 @@ type TagFilterProps = {
   active: string | null;
   onSelect: (tag: string | null) => void;
   allLabel: string;
+  locale: Locale;
 };
 
-export function TagFilter({ tags, active, onSelect, allLabel }: TagFilterProps) {
+export function TagFilter({ tags, active, onSelect, allLabel, locale }: TagFilterProps) {
   return (
     <div
       data-od-id="tag-filter"
@@ -33,7 +37,7 @@ export function TagFilter({ tags, active, onSelect, allLabel }: TagFilterProps) 
           className="chip shrink-0"
           onClick={() => onSelect(active === tag.name ? null : tag.name)}
         >
-          {tag.name} <span className="text-faint">{tag.count}</span>
+          {localizeTag(tag.name, locale)} <span className="text-faint">{tag.count}</span>
         </button>
       ))}
     </div>

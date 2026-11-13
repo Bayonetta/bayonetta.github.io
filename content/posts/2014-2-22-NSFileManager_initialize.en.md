@@ -31,7 +31,7 @@ The shared singleton can safely be called from multiple threads. However, if you
 
 > In iOS and Mac OS X v 10.5 and later you should consider using [[NSFileManager alloc] init] rather than the singleton method defaultManager. Instances of NSFileManager are considered thread-safe when created using [[NSFileManager alloc] init].
 
-Therefore the shared singleton obtained with `[NSFileManager defaultManager]` is not thread-safe. The officially recommended approach is to instantiate with `[[NSFileManager alloc] init]`.
+Correction: reading these two passages together, it is easy to conclude that `defaultManager` is not thread-safe. That reading is wrong. The methods of `defaultManager` **are** thread-safe; a separate instance is required only when you attach a delegate to receive operation notifications, because `delegate` is per-instance and would otherwise be overwritten by other callers.
 
 ```objc
 NSFileManager *fileManager = [[NSFileManager alloc] init];

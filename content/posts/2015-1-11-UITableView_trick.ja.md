@@ -4,7 +4,7 @@ title: "UITableViewでHeaderViewの停留を禁止する小技"
 description: "チュートリアル"
 category: "iOS"
 comments: true
-tags: [iOS, 开发，优化]
+tags: [iOS, 開発, UITableView]
 machineTranslated: true
 ---
 

@@ -4,7 +4,7 @@ title: "配置优雅的iOS开发环境"
 description: "Tutorial"
 category: "iOS"
 comments : true
-tags: ['iOS','Xcode','IDE']
+tags: ['iOS','Xcode',"开发"]
 ---
 
 几个月前因为工作的关系，将主力开发方向由Android转到iOS，因为体会过Eclipse和0.x时代的Android Studio是如何的笨拙不稳定，如何的臃肿不便，以致初次打开Xcode，竟似牧羊少年初识大都会，随之泛起的是浓浓的幸福和新鲜感。足够优雅的ui，华丽的交互，与触摸板深度结合的便利操作，这一切的一切都直令眼角湿润。
@@ -36,11 +36,11 @@ github上有非常多的可选主题，<a href="https://github.com/tursunovic/xc
 
 Xcode从Version4开始引入Code Snippets，在整个界面的右下角，可以通过快捷键：cmd + ctrl + opt + 2 调出来。Code Snippets是一些代码的模版，对于一些常见的编程模式，Xcode都将这些代码抽象成模版放到Code Snippet中，使用的时候，只需要键入快捷键，就可以把模版的内容填到代码中。
 
-输入`<#`xxx`#>`可以使圈中区域'xxx'变为待填充状态，在Snippets的填写中十分有用，这种用法在Xcode中到处可见。
+输入`<#xxx#>`可以使圈中区域'xxx'变为待填充状态，在Snippets的填写中十分有用，这种用法在Xcode中到处可见。
 
 推荐mattt大神的<a href="https://github.com/mattt/Xcode-Snippets">Xcode-Snippets</a>项目, 包含了常用开发中绝大部分代码片段。
 
-这比用Github的Gist或者Dash自带的代码片段收集工具要方便很大，因为其与Xcode的深度绑定，可以设置快捷键进行快速补全，无比畅快。
+这比用Github的Gist或者Dash自带的代码片段收集工具要方便很多，因为其与Xcode的深度绑定，可以设置快捷键进行快速补全，无比畅快。
 
 ## Plugins
 
@@ -50,11 +50,11 @@ Xcode从Version4开始引入Code Snippets，在整个界面的右下角，可以
 
 * [HOStringSense-for-Xcode](https://github.com/holtwick/HOStringSense-for-Xcode)，常规模式下辅助显示字符串长度，并可以自动对特殊字符进行自动转义
 
-* [SCXodeMiniMap](https://github.com/stefanceriu/SCXcodeMiniMap)，可以加入类似SublimeText的minimap，非常Cool
+* [SCXcodeMiniMap](https://github.com/stefanceriu/SCXcodeMiniMap)，可以加入类似SublimeText的minimap，非常Cool
 
-* [Lin-Xcode5](href="https://github.com/questbeat/Lin-Xcode5">)，可以直接索引和编辑本地化操作
+* [Lin-Xcode5](https://github.com/questbeat/Lin-Xcode5)，可以直接索引和编辑本地化操作
 
-* [KSImageNamed-Xcode](https://github.com/ksuther/KSImageNamed-Xcode)，可以自动索引并预览归档在`Images.xcassets`下地图片文件，非常实用
+* [KSImageNamed-Xcode](https://github.com/ksuther/KSImageNamed-Xcode)，可以自动索引并预览归档在`Images.xcassets`下的图片文件，非常实用
 
 * [AutoresizeMask-for-Xcode](https://github.com/garnett/AutoresizeMask-for-Xcode)，将`autoresizeMask`配置可视化
 
@@ -71,8 +71,7 @@ Xcode从Version4开始引入Code Snippets，在整个界面的右下角，可以
 
 ```bash
 
-$ ~/.lldbinit
-...
+# ~/.lldbinit
 command script import /path/to/fblldb.py
 
 ```
@@ -85,15 +84,15 @@ command script import /path/to/fblldb.py
 命令|描述
 :---------------|:---------------
 pviews                            |递归打印keyWindow包含的View的描述信息|
-pvc                               |递归打印keyWindow包含的ViewControoler的描述信息|
+pvc                               |递归打印keyWindow包含的ViewController的描述信息|
 visualize                         |使用Mac上的Preview.app查看UIImage，UIView或者CALayer|
 fv                                |在View层级表中查找类名符合正则表达式的视图|
-fvc                               |在ViewController层级表中查找类d名符合正则表达式的视图|
-show/hide                         |显示后隐藏给出的View或Layer。甚至不需要继续处理就能查看变化|
+fvc                               |在ViewController层级表中查找类名符合正则表达式的视图|
+show/hide                         |显示或隐藏给出的View或Layer。甚至不需要继续处理就能查看变化|
 mask/unmask                       |使用透明矩形标示出View或者Layer|
 border/unborder                   |使用可见矩形标示出View或者Layer|
 caflush                           |刷新渲染器(如果没有动画实际效果等于“repaint”)|
-bmessage                          |在类方法或实例方法上放置象征断点，不用担心类的继承|
+bmessage                          |在类方法或实例方法上放置符号断点，不用担心类的继承|
 wivar                             |在实例对象上设置观察点|
 presponder                        |打印出给出对象的responder链|
 ...                               |... 还有更多|
@@ -101,5 +100,5 @@ presponder                        |打印出给出对象的responder链|
 
 ## More:
 
- * NSHipter最新一期的文章[Xcode Plugins](http://nshipster.com/xcode-plugins/)介绍了更多更炫的插件(NSHipter越来越无聊了，估计Mattt大神真的是没东西可写了)
+ * NSHipster最新一期的文章[Xcode Plugins](http://nshipster.com/xcode-plugins/)介绍了更多更炫的插件(NSHipster越来越无聊了，估计Mattt大神真的是没东西可写了)
  * 唐巧在他的开源项目[Xcode-tool](https://github.com/tangqiaoboy/xcode_tool)中提供了Snippets的自动化安装脚本

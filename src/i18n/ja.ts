@@ -28,18 +28,18 @@ export const ja: Dict = {
     resumeEmpty: "（準備中）",
     tagsTitle: "タグ",
     yearsTitle: "年",
-    backToHome: "← ホームに戻る",
-    backToList: "← 一覧に戻る",
+    backToHome: "ホームに戻る",
+    backToList: "一覧に戻る",
     updatedAt: "更新",
     readingTime: "{min} 分",
     comments: "コメント",
     machineTranslation:
-      "この記事は機械翻訳ツールにより自動生成されたもので、参考用です。意味に齟齬がある場合は、中国語の原文を基準としてください。",
+      "この記事は AI 翻訳によって生成されたもので、参考用です。意味に齟齬がある場合は、中国語の原文を基準としてください。",
   },
   gallery: {
     title: "Gallery",
     subtitle: "写真と記録",
-    comingSoon: "準備中",
+    comingSoon: "この機能は現在利用できません",
   },
   about: {
     title: "About",

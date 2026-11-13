@@ -1,13 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import Fuse from "fuse.js";
 import type { PostMeta } from "@/lib/api";
 import { SearchBar } from "@/components/SearchBar";
 import { TagFilter } from "@/components/TagFilter";
 import { useLocale } from "@/lib/locale";
+import { useSitePrefix } from "@/lib/links";
 import type { Locale } from "@/i18n/types";
+import { localizeTag } from "@/lib/tag-labels";
 
 const langBadge: Record<Locale, string> = {
   zh: "中",
@@ -48,6 +49,7 @@ function groupByYear(posts: PostMeta[]): YearGroup[] {
 
 export function BlogBrowser({ posts }: { posts: PostMeta[] }) {
   const { t, locale } = useLocale();
+  const prefix = useSitePrefix();
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
@@ -118,6 +120,7 @@ export function BlogBrowser({ posts }: { posts: PostMeta[] }) {
             active={activeTag}
             onSelect={setActiveTag}
             allLabel={t.blog.allTags}
+            locale={locale}
           />
         </div>
         <nav
@@ -200,25 +203,13 @@ export function BlogBrowser({ posts }: { posts: PostMeta[] }) {
                     </time>
                     <div className="min-w-0">
                       <h3 className="flex items-center gap-2">
-                        <Link
-                          href={`/blog/${post.slug}`}
+                        <a
+                          href={`${prefix}blog/${post.slug}`}
                           className="text-[15px] font-medium leading-snug transition-colors hover:text-accent"
                         >
                           {post.title}
-                        </Link>
-                        <span
-                          className={`shrink-0 rounded border border-line px-1 py-px font-mono text-[10px] leading-none ${
-                            post.locale === "zh" ? "text-muted" : "text-accent"
-                          }`}
-                        >
-                          {langBadge[post.locale]}
-                        </span>
+                        </a>
                       </h3>
-                      {post.description && (
-                        <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-muted">
-                          {post.description}
-                        </p>
-                      )}
                       {post.tags.length > 0 && (
                         <div className="mt-1.5 flex flex-wrap gap-1.5">
                           {post.tags.map((tag) => (
@@ -229,7 +220,7 @@ export function BlogBrowser({ posts }: { posts: PostMeta[] }) {
                               data-active={activeTag === tag}
                               className="chip !px-2 !py-px text-[11px]"
                             >
-                              {tag}
+                              {localizeTag(tag, locale)}
                             </button>
                           ))}
                         </div>

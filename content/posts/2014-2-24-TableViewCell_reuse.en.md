@@ -4,34 +4,9 @@ title: "On reusing TableViewCell"
 description: "Tutorial"
 category: "iOS"
 comments: true
-tags: ["iOS", "开发", "UITableView"]
+tags: ["iOS", "Development", "UITableView"]
 machineTranslated: true
 ---
-
-## Example
-
-When creating a UITableViewCell, you should instantiate it in the following way.
-
-```objc
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    NSString *CMainCell = [NSString stringWithFormat:@"Cell%d",indexPath.row];     //  0
-
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CMainCell];      //   1
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault  reuseIdentifier: CMainCell];    //  2
-
-        ...
-    }
-
-    // Adjust cell content
-    cell.textLabel.text = @"XXX";    //  3
-
-    ...
-
-    return cell;
-}
-```
 
 ## How it works
 
@@ -41,10 +16,31 @@ When the table view draws its list cells, assume the maximum number of cells tha
 
 However, if the cell contains a relatively complex view structure, such as a button, the corresponding creation process must be placed after step 2 rather than after step 3; otherwise overlapping views appear, because cells are continuously reused and the button created initially still exists.
 
-So if we want to customise the content of each cell, we need to identify the cell uniquely — that is what `dequeueReusableCellWithIdentifier:CMainCell` does: it obtains the cell object through a unique identifier so it can be customised accordingly.
+Correction: this is where the original note went wrong. Building the reuse identifier from `indexPath.row` gives every row its own identifier, so `dequeueReusableCellWithIdentifier:` never finds a cell to reuse — `cell == nil` is true every time and a new cell is allocated for each row. Reuse breaks silently: small lists look fine, longer ones start to stutter and memory climbs.
+
+The reuse identifier names a *kind* of cell, not an individual cell. Cells that share a layout share one identifier; the per-row differences go into the content assignment at step 3.
+
+```objc
+static NSString * const kMainCellIdentifier = @"MainCell";
+
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kMainCellIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                      reuseIdentifier:kMainCellIdentifier];
+        // Complex subviews are created here, once.
+    }
+
+    // Reassign every time the cell is reused; never create subviews here.
+    cell.textLabel.text = self.items[indexPath.row];
+    return cell;
+}
+```
+
+If rows genuinely need different layouts, define several identifiers and branch on the data type inside `cellForRowAtIndexPath:`, not on the row index.
 
 ## Comparison with Android
 
-In Android the list control is called a listview, and purely by name the Android definition is clearer and more precise.
-
-The reuse of list cells in Android is very similar to iOS. The common approach is to create a viewholder to act as a cache for cells, and to give each cell a tag for unique identification.
+Android's older `ListView` also reused rows. A `ViewHolder` cached references to child views so the app did not have to call `findViewById` repeatedly. Later, `RecyclerView` made the ViewHolder pattern part of its adapter API. The underlying goal is the same as UIKit cell reuse: reuse the container, then update its content for the current data.

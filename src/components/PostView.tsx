@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useLocale } from "@/lib/locale";
 import type { Locale } from "@/i18n/types";
@@ -10,19 +9,12 @@ export type PostVariant = {
   lang: Locale;
   title: string;
   date: string;
-  description?: string;
   tags: string[];
   updated?: string;
   readingTime: number;
   comments?: boolean;
   machineTranslated?: boolean;
   content: React.ReactNode;
-};
-
-const langNames: Record<Locale, string> = {
-  zh: "中文",
-  en: "English",
-  ja: "日本語",
 };
 
 export function PostView({ variants }: { variants: PostVariant[] }) {
@@ -41,37 +33,7 @@ export function PostView({ variants }: { variants: PostVariant[] }) {
 
   return (
     <article className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6">
-      <Link
-        href="/blog"
-        className="mb-8 inline-block font-mono text-sm text-muted transition-colors hover:text-accent"
-      >
-        ← {t.blog.backToList}
-      </Link>
-
-      {/* 多语言版本切换 */}
-      {variants.length > 1 && (
-        <div
-          role="group"
-          aria-label="语言版本"
-          className="mb-6 flex w-fit items-center gap-0.5 rounded-lg border border-line p-0.5"
-        >
-          {variants.map((v) => (
-            <button
-              key={v.lang}
-              type="button"
-              onClick={() => setLang(v.lang)}
-              aria-pressed={lang === v.lang}
-              className={`rounded-md px-3 py-1 font-mono text-xs transition-colors ${
-                lang === v.lang
-                  ? "bg-accent-soft text-accent"
-                  : "text-muted hover:text-fg"
-              }`}
-            >
-              {langNames[v.lang]}
-            </button>
-          ))}
-        </div>
-      )}
+      {/* 返回入口统一放在 SiteHeader 左上角，正文里不再重复放箭头 */}
 
       <header className="mb-8">
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
