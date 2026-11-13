@@ -12,7 +12,7 @@ Bayonetta 的个人主页 — 技术博客 · 图集 · 系列项目。基于 [N
 - **日夜主题**：暗色默认，一键切换并持久化
 - **统计**：Google Analytics 4（`NEXT_PUBLIC_GA_ID` 环境变量）
 
-## 本地开发
+## 本地开发 
 
 ```bash
 npm install
